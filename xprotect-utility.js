@@ -55,3 +55,5 @@ async function get_token(session, username, password, serverUrl) {
   
     return response;
 }
+
+module.exports = { get_token }

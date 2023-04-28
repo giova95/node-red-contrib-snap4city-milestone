@@ -1,0 +1,43 @@
+<script type="text/html" data-template-name="x-login">
+    <!-- Address -->
+    <div class="form-row">
+      <label for="node-input-address"><i class="fa fa-tag"></i> Address</label>
+      <input id="node-input-address" type="text" placeholder="http://">
+    </div>
+      <!-- User -->
+      <div class="form-row">
+        <label for="node-input-username"><i class="fa fa-tag"></i> User</label>
+        <input type="text" id="node-input-basic_auth_user" placeholder="Username">
+      </div>
+      <!-- Password -->
+      <div class="form-row">
+        <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
+        <input type="password" id="node-input-password" placeholder="Password">
+      </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+RED.nodes.registerType('x-login',{
+   category: 'S4CXprotect',
+   color: '#00a2d3',
+   icon: 'icons/logosnap.png',
+   defaults:{
+    address: { 
+      value: '', 
+      validate: function(v) {
+        let url;
+        try {
+          url = new URL(v);
+        } catch (_) {
+          return false;  
+        }
+        return url.protocol === "http:" || url.protocol === "https:";
+      }
+    },
+    username: {type: 'text'},
+    password: { type: 'password'}
+   } 
+})
+
+</script>

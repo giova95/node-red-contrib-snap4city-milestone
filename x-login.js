@@ -4,7 +4,7 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         var node = this;
         var fetch = require('fetch');
-        var Xutility = require("./xprotect-utility.js");
+        var {get_token} = require("./xprotect-utility.js");
         var Gateway = require("./xprotect-gateway.js");
             node.on('input', async function () {
             var username = config.user; // XProtect basic user with the XProtect Administrators role
@@ -15,7 +15,7 @@ module.exports = function (RED) {
             const session = fetch.session();
 
             // Now authenticate using the identity provider and get access token
-            const response = await Xutility.get_token(session, username, password, serverUrl);
+            const response = await get_token(session, username, password, serverUrl);
             if (response.status === 200) {
                 const tokenResponse = await response.json();
                 const access_token = tokenResponse.access_token; // The token that we'll use for RESTful API calls
