@@ -1,4 +1,4 @@
-import axios from 'axios';
+//import axios from 'axios';
 
 class Gateway {
     
@@ -74,4 +74,4 @@ class Gateway {
   }
 }
 
-export default Gateway;
+module.exports = Gateway;

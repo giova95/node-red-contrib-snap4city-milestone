@@ -1,8 +1,6 @@
-const fetch = require('fetch')
-import Gateway from './xprotect-gateway.js';
-import {get_event, create_event, update_event, delete_event} from './event_api.js';
+//import {get_event, create_event, update_event, delete_event} from './event_api.js';
 
-async function main(){
+/*async function main(){
   const username = 'giova'; // Replace with an XProtect basic user with the XProtect Administrators role
   const password = '.Prova21.'; // Replace with password for basic user
   const serverUrl = 'https://panicucci-pc'; // Replace with the hostname of the management server, assuming that the API Gateway has been installed on the same host
@@ -38,22 +36,28 @@ async function main(){
     return;
   }
 }
+*/
 
 //Get a bearer access token for the MIP VMS RESTful API gateway.
-async function get_token(session, username, password, serverUrl) {
+async function get_token(username, password, serverUrl) {
     const url = `${serverUrl}/API/IDP/connect/token`;
-    const payload = `grant_type=password&username=${username}&password=${password}&client_id=GrantValidatorClient`;
-    const headers = {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    };
+    const payload = {
+      grant_type: 'password',
+      username:username,
+      password: password,
+      client_id: 'GrantValidatorClient'
+    }
   
-    const response = await session.post(url, {
-      headers,
-      data: payload,
-      validateStatus: false
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: JSON.stringify(payload),
     });
   
-    return response;
+    const data = await response.json();
+    return data;
 }
 
 module.exports = { get_token }
