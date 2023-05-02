@@ -6,29 +6,31 @@ class Gateway {
     this.serverUrl = serverUrl;
   }
 
-  async get(session, resource_plural, token) {
+  async get(resource_plural, token) {
     const url = this.url(resource_plural);
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-    try {
-      const response = await session.request({
-        method: 'get',
-        url,
-        headers,
-        paramsSerializer: params => {
+
+    
+      await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        },
+        /*paramsSerializer: params => {
           // dict {'param1': 'value1', 'param2': null} becomes query string 'param1=value1&param2'
           const queryString = Object.keys(params)
             .map(key => (params[key] === null ? key : `${key}=${params[key]}`))
             .join('&');
           return queryString;
-        },
-      });
-      return response;
-    } catch (error) {
+        },*/
+      }).then(async function (response) {
+        await checkResponse(response);
+
+        const json = await response.json();
+        return json;
+    }).catch(function (error) {
       console.error(error);
       throw error;
-    }
+    });
   }
 
   async request(session, verb, url, token, params = {}, payload = '') {
