@@ -158,4 +158,33 @@ async function get_token(username, password, serverUrl) {
     return data;
 }
 
-module.exports = { get_token }
+//Get a bearer access token for the MIP VMS RESTful API gateway.
+async function getToken(username, password, serverUrl) {
+  token = null;
+  var idpUrl = serverUrl + "/IDP/connect/token";
+
+  var urlencoded = new URLSearchParams();
+  urlencoded.append("grant_type", "password");
+  urlencoded.append("username", username);
+  urlencoded.append("password", password);
+  urlencoded.append("client_id", "GrantValidatorClient");
+
+  await fetch(idpUrl, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: urlencoded,
+  }).then(async function (response) {
+      const json = await response.json();
+      token = json["access_token"];
+  }).catch(function (error) {
+      var msg = "Failed to retrieve token - " + error;
+      console.log(msg);
+      log(msg);
+  });
+
+  return token;
+}
+
+module.exports = { getToken }
