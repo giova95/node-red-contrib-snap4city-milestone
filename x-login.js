@@ -1,14 +1,20 @@
 module.exports = function (RED) {
 
+    //TODO: add try to login yellow, and on close
+
     function XLogin(config) {
         RED.nodes.createNode(this, config);
         var node = this;
         var { getToken } = require("./xprotect-utility.js");
         var Gateway = require("./xprotect-gateway.js");
-        node.on('input', async function (msg) {
-            var serverUrl = msg.address; // Hostname of the management server, assuming that the API Gateway has been installed on the same host
-            var username = msg.user; //XProtect basic user with the XProtect Administrators role
-            var password = msg.password; // Password for basic user
+
+
+        login(config);
+
+        async function login() {
+            var serverUrl = config.address; // Hostname of the management server, assuming that the API Gateway has been installed on the same host
+            var username = config.user; //XProtect basic user with the XProtect Administrators role
+            var password = config.password; // Password for basic user
 
             // Now authenticate using the identity provider and get access token
             const response = await getToken(username, password, serverUrl);
@@ -17,7 +23,7 @@ module.exports = function (RED) {
                 let tokenResponse = await response.json();
                 node.warn(tokenResponse);
                 var token = tokenResponse["access_token"];
-                node.status({ fill: "green", shape: "dot", text: username + " logged in" });
+                node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                 
                 // Create an API Gateway
                 const api_gateway = new Gateway(serverUrl);
@@ -32,7 +38,8 @@ module.exports = function (RED) {
                 node.warn(error);
                 return;
             }
-        });
+        }
+        
     }
     RED.nodes.registerType('x-login', XLogin);
 };   

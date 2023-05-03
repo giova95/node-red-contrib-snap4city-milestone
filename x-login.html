@@ -1,13 +1,51 @@
 <script type="text/html" data-template-name="x-login">
+  <!-- Address -->
+  <div class="form-row">
+    <label for="node-input-address"><i class="fa fa-tag"></i> Address</label>
+    <input id="node-input-address" type="text" placeholder="http://">
+  </div>
+  <!-- Basic Authentication -->
+  <div id="node-row-basic-auth">
+    <!-- User -->
+    <div class="form-row">
+      <label for="node-input-user"><i class="fa fa-tag"></i> User</label>
+      <input type="text" id="node-input-user" placeholder="User">
+    </div>
+    <!-- Password -->
+    <div class="form-row">
+      <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
+      <input type="password" id="node-input-password" placeholder="Password">
+    </div>
+  </div>
 </script>
 
 <script type="text/javascript">
 RED.nodes.registerType('x-login',{
-   category: 'S4CXprotect',
-   color: '#00a2d3',
-   inputs: 3,
-   outputs: 0,
-   icon: 'icons/logosnap.png',
+category: 'S4CXprotect',
+color: '#00a2d3',
+inputs: 0,
+outputs: 0,
+icon: 'icons/logosnap.png',
+label: function(){
+  return this.name || 'Login to Milestone';
+},
+defaults:{
+  address:{
+     type:'text', 
+     value: '', 
+     validate: function(v) {
+        let url;
+        try {
+           url = new URL(v);
+        } catch (_) {
+           return false;  
+        }
+        return url.protocol === "http:" || url.protocol === "https:";
+     }
+  },
+  user:{type:'text'},
+  password:{type:'password'}
+}
 });
 
 </script>
