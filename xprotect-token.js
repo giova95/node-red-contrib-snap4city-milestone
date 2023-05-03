@@ -136,32 +136,11 @@ async function checkResponseFromIdp(response) {
 }
 */
 
-//Get a bearer access token for the MIP VMS RESTful API gateway.
-async function get_token(username, password, serverUrl) {
-    const url = `${serverUrl}/API/IDP/connect/token`;
-    const payload = {
-      grant_type: 'password',
-      username:username,
-      password: password,
-      client_id: 'GrantValidatorClient'
-    }
-  
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: JSON.stringify(payload),
-    });
-  
-    const data = await response.json();
-    return data;
-}
-
-//Get a bearer access token for the MIP VMS RESTful API gateway.
+var fetch = require('node-fetch');
+//Get a bearer access token for the MIP VMS RESTful API gateway
 async function getToken(username, password, serverUrl) {
-  token = null;
-  var idpUrl = serverUrl + "/IDP/connect/token";
+  var token = null;
+  var idpUrl = serverUrl + "/API/IDP/connect/token";
 
   var urlencoded = new URLSearchParams();
   urlencoded.append("grant_type", "password");
@@ -176,12 +155,12 @@ async function getToken(username, password, serverUrl) {
       },
       body: urlencoded,
   }).then(async function (response) {
-      const json = await response.json();
-      token = json["access_token"];
+      let res = await response;
+      token = res;
   }).catch(function (error) {
       var msg = "Failed to retrieve token - " + error;
       console.log(msg);
-      log(msg);
+      return error;
   });
 
   return token;
