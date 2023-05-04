@@ -6,6 +6,37 @@ class Gateway {
     this.serverUrl = serverUrl;
   }
 
+  //CRUD methods for EVENTS
+
+  async getAllEvents(){
+
+
+  }
+
+  //CRUD methods for CAMERAS
+  async getAllCameras(){
+
+  }
+  //CRUD methods for RULES
+
+  async getAllRules(token){
+    const url = this.serverUrl + '/API/rest/v1/cameras';
+    var result = null;
+    await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(async function(response) {
+      let res = await response;
+      result = res;
+    }).catch(function(error) {
+      let msg = 'Failed to retrieve rules - '+ error;
+      console.log(msg);
+    });
+    return result;
+  }
+  
   async get(resource_plural, token) {
     const url = this.url(resource_plural);
 
