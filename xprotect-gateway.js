@@ -1,98 +1,164 @@
 //import axios from 'axios';
 
 class Gateway {
-    
+
   constructor(serverUrl) {
     this.serverUrl = serverUrl;
   }
 
   //CRUD methods for EVENTS
 
-  async getAllEvents(){
-
-
-  }
-
-  //CRUD methods for CAMERAS
-  async getAllCameras(){
-
-  }
-  //CRUD methods for RULES
-
-  async getAllRules(token){
-    const url = this.serverUrl + '/API/rest/v1/cameras';
-    var result = null;
+  async getAllEvents(token) {
+    const url = this.serverUrl + '/API/rest/v1'
+    var events = null;
     await fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
       }
-    }).then(async function(response) {
+    }).then(async function (response) {
       let res = await response;
-      result = res;
-    }).catch(function(error) {
-      let msg = 'Failed to retrieve rules - '+ error;
-      console.log(msg);
-    });
-    return result;
-  }
-  
-  async get(resource_plural, token) {
-    const url = this.url(resource_plural);
-
-    
-      await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + token
-        },
-        /*paramsSerializer: params => {
-          // dict {'param1': 'value1', 'param2': null} becomes query string 'param1=value1&param2'
-          const queryString = Object.keys(params)
-            .map(key => (params[key] === null ? key : `${key}=${params[key]}`))
-            .join('&');
-          return queryString;
-        },*/
-      }).then(async function (response) {
-        await checkResponse(response);
-
-        const json = await response.json();
-        return json;
+      events = res;
     }).catch(function (error) {
-      console.error(error);
-      throw error;
+      let msg = 'Failed to retrieve rules - ' + error;
+      console.log(msg);
+      events = msg;
     });
+    return events;
   }
 
-  async request(session, verb, url, token, params = {}, payload = '') {
-    const tokenstring = `Bearer ${token}`;
-    const headers = {
-      Authorization: tokenstring,
+  //CRUD methods for RULES
+  async getAllRules(token) {
+    const url = this.serverUrl + '/API/rest/v1/rules'
+    var rules = null;
+    await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(async function (response) {
+      let res = await response;
+      rules = res;
+    }).catch(function (error) {
+      let msg = 'Failed to retrieve rules - ' + error;
+      console.log(msg);
+      rules = msg;
+    });
+    return rules
+  }
+
+  async addRule(token, rule) {
+    const url = this.serverUrl + '/API/rest/v1/rules'
+    const payload = {
+      name: rule.name,
+      description: rule.desc,
+      startRuleType: rule.startRule,
+      stopRuleType: rule.stopRule,
+      startActions: rule.startAct,
+      stopActions: rule.stopAct
     };
-    const options = {
-      method: verb.toLowerCase(),
-      url,
-      headers,
-      paramsSerializer: params => {
-        // dict {'param1': 'value1', 'param2': null} becomes query string 'param1=value1&param2'
-        const queryString = Object.keys(params)
-          .map(key => (params[key] === null ? key : `${key}=${params[key]}`))
-          .join('&');
-        return queryString;
+
+    var ok = null;
+
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       },
+      body: JSON.stringify(payload)
+    }).then(async function (response) {
+      let res = await response.json();
+      ok = res; // reminder: status code 201
+    }).catch(async function (err) {
+      msg = 'Failed to add rule -' + err;
+      ok = msg;
+    })
+    return ok;
+  }
+
+  async deleteRule(token, idRule) {
+    const url = this.serverUrl + '/API/rest/v1/rules/' + idRule;
+    var ok = null;
+
+    await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(async function (response) {
+      let res = await response.json();
+      ok = res;
+    }).catch(async function (err) {
+      msg = 'Failed to delete rule -' + err;
+      ok = msg;
+    })
+    return ok;
+  }
+
+  //CRUD methods for CAMERAS
+
+  async getAllCameras(token) {
+    const url = this.serverUrl + '/API/rest/v1/cameras';
+    var cam = null;
+    await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(async function (response) {
+      let res = await response;
+      cam = res;
+    }).catch(function (error) {
+      let msg = 'Failed to retrieve rules - ' + error;
+      console.log(msg);
+      cam = msg;
+    });
+    return cam;
+  }
+
+  async getCameraGroups(token) {
+    const url = this.serverUrl + '/API/rest/v1/cameraGroups'
+    var group = null;
+    await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(async function (response) {
+      let res = await response;
+      group = res;
+    }).catch(function(error){
+      let msg = 'Failed to retrieve groups - ' + error
+      group = msg;
+    });
+    return group;
+  }
+
+  async addCamera(token, idGroup, camera){
+    const url = this.serverUrl + `/API/rest/v1/${idGroup}/cameras`
+    const payload = {
+      name: camera.name,
+      description: camera.desc
     };
-    if (verb.toLowerCase() === 'get') {
-      options.params = params;
-    } else {
-      options.data = payload;
-    }
-    try {
-      const response = await session.request(options);
-      return response;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+
+    var ok = null;
+
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(payload)
+    }).then(async function (response) {
+      let res = await response.json();
+      ok = res; // reminder: status code 201
+    }).catch(async function (err) {
+      msg = 'Failed to add rule -' + err;
+      ok = msg;
+    })
+    return ok;
   }
 
   url(resource_plural, obj_id = null, child_item_type = null) {
