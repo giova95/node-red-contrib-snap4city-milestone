@@ -6,6 +6,7 @@ class Gateway {
     this.serverUrl = serverUrl;
   }
 
+
   //CRUD methods for EVENTS
 
   async getAllEvents(token) {
@@ -25,79 +26,10 @@ class Gateway {
       events = msg;
     });
     return events;
-  }
 
-  //CRUD methods for RULES
-  async getAllRules(token) {
-    const url = this.serverUrl + '/API/rest/v1/rules'
-    var rules = null;
-    await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    }).then(async function (response) {
-      let res = await response;
-      rules = res;
-    }).catch(function (error) {
-      let msg = 'Failed to retrieve rules - ' + error;
-      console.log(msg);
-      rules = msg;
-    });
-    return rules
-  }
-
-  async addRule(token, rule) {
-    const url = this.serverUrl + '/API/rest/v1/rules'
-    const payload = {
-      name: rule.name,
-      description: rule.desc,
-      startRuleType: rule.startRule,
-      stopRuleType: rule.stopRule,
-      startActions: rule.startAct,
-      stopActions: rule.stopAct
-    };
-
-    var ok = null;
-
-    await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(payload)
-    }).then(async function (response) {
-      let res = await response.json();
-      ok = res; // reminder: status code 201
-    }).catch(async function (err) {
-      msg = 'Failed to add rule -' + err;
-      ok = msg;
-    })
-    return ok;
-  }
-
-  async deleteRule(token, idRule) {
-    const url = this.serverUrl + '/API/rest/v1/rules/' + idRule;
-    var ok = null;
-
-    await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(async function (response) {
-      let res = await response.json();
-      ok = res;
-    }).catch(async function (err) {
-      msg = 'Failed to delete rule -' + err;
-      ok = msg;
-    })
-    return ok;
   }
 
   //CRUD methods for CAMERAS
-
   async getAllCameras(token) {
     const url = this.serverUrl + '/API/rest/v1/cameras';
     var cam = null;
@@ -128,14 +60,15 @@ class Gateway {
     }).then(async function (response) {
       let res = await response;
       group = res;
-    }).catch(function(error){
+    }).catch(function (error) {
       let msg = 'Failed to retrieve groups - ' + error
       group = msg;
     });
     return group;
   }
 
-  async addCamera(token, idGroup, camera){
+  //FIXME: non trovo id group giusto
+  async addCamera(token, idGroup, camera) {
     const url = this.serverUrl + `/API/rest/v1/${idGroup}/cameras`
     const payload = {
       name: camera.name,
@@ -148,6 +81,7 @@ class Gateway {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'Authorization': 'Bearer ' + token
       },
       body: JSON.stringify(payload)
@@ -156,6 +90,92 @@ class Gateway {
       ok = res; // reminder: status code 201
     }).catch(async function (err) {
       msg = 'Failed to add rule -' + err;
+      ok = msg;
+    })
+    return ok;
+  }
+
+
+  //CRUD methods for RULES
+
+  async getAllRules(token) {
+    const url = this.serverUrl + '/API/rest/v1/rules'
+    var rules = null;
+    await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(async function (response) {
+      let res = await response;
+      rules = res;
+    }).catch(function (error) {
+      let msg = 'Failed to retrieve rules - ' + error;
+      console.log(msg);
+      rules = msg;
+    });
+    return rules
+  }
+
+  //FIXME: capire formato input
+  async addRule(token) {
+    const url = this.serverUrl + '/API/rest/v1/rules'
+    const payload = {
+      "enabled": true,
+      "name": "Default Start Audio Feed Rule",
+      "description": "Rule may have a long description",
+      "startRuleType": "TimeInterval",
+      "stopRuleType": "TimeInterval",
+      "always": true,
+      "withinTimeProfile": false,
+      "outsideTimeProfile": false,
+      "timeOfDayBetween": false,
+      "daysOfWeek": false,
+      "startActions": "StartFeed",
+      "stopActions": "StopFeed",
+      "relations": {
+        "self": {
+          "type": "rules",
+          "id": "43609ca5-bfdd-4238-88ff-686b6657138f"
+        }
+      }
+    };
+
+    var ok = null;
+
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(payload)
+    }).then(async function (response) {
+      let res = await response;
+      ok = res; // reminder: status code 201
+    }).catch(function (err) {
+      msg = 'Failed to add rule -' + err;
+      ok = msg;
+    })
+    return ok;
+  }
+
+  async deleteRule(token, idRule) {
+    const url = this.serverUrl + '/API/rest/v1/rules/' + idRule;
+    var ok = null;
+
+    await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    }).then(async function (response) {
+      let res = await response.json();
+      ok = res;
+    }).catch(function (err) {
+      msg = 'Failed to delete rule -' + err;
       ok = msg;
     })
     return ok;
