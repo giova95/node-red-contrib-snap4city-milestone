@@ -3,25 +3,25 @@ module.exports = function(RED){
     function XSendEvent(config){
         RED.nodes.createNode(this, config);
         var node = this;
-        var api_gateway;
         var access_token;
+        var {sendXMLhttp} = require('sendXMLhttp');
 
         node.on('input', function(msg){
-            api_gateway = this.context().flow.get('api_gateway') || null;
             access_token = this.context().flow.get('access_token') || null;
             if(access_token == null){
                 node.warn("Login to XProtect first!");
                 return;
             }
             const resultMsg = {payload : null};
-            let newmsg = {
-                payload : msg.payload,
-                guid: " " // insert here an actual valid Guid of your device
-            };
-
-            //function who send event and return result
+            let guid = msg?msg.guid:config.guid;
+            let name = msg?msg.name:config.name;
+            let hostname = msg?msg.hostname:config.hostname;
+            let port = msg?msg.port:config.port;
             
-            node.send(resultMsg); 
+            //function who send event and return result
+            resultMsg.payload = sendXMLhttp(guid, name, hostname, port);
+
+            node.warn(resultMsg); 
             return;
         });
         

@@ -3,20 +3,35 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
+    <div class="form-row">
+        <label for="node-input-guid"><i class="fa fa-tag"></i> GUID</label>
+        <input type="text" id="node-input-guid" placeholder="GUID">
+    </div>
+    <div class="form-row">
+        <label for="node-input-hostname"><i class="fa fa-tag"></i> Hostname</label>
+        <input type="text" id="node-input-hostname" placeholder="Hostname">
+    </div>
+    <div class="form-row">
+        <label for="node-input-port"><i class="fa fa-tag"></i> Port</label>
+        <input type="text" id="node-input-port" placeholder="Port">
+    </div>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('xsend-event',{
-        category:'S4CXprotect',
+    RED.nodes.registerType('xsend-event', {
+        category: 'S4CXprotect',
         color: '#00a2d3',
         icon: 'icons/logosnap.png',
-        defaults:{
-            name: {value: ""}
-        },
-        inputs: 1,
+        inputs: 4,
         outputs: 1,
-        label: function(){
+        label: function () {
             return this.name || 'Send Event to XProtect';
+        },
+        defaults: {
+            name: { type: "text" },
+            guid: { type: "text" },
+            hostname: { type: 'text' },
+            port: { type: "text" },
         }
     });
 </script>
