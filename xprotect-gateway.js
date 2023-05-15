@@ -1,4 +1,5 @@
 //import axios from 'axios';
+var mqtt = require("mqtt")
 
 class Gateway {
 
@@ -6,6 +7,16 @@ class Gateway {
     this.serverUrl = serverUrl;
   }
 
+  //test subscribe mqtt broker
+  subscribe(){
+    const client = mqtt.connect("mqtt://localhost");
+  
+    client.subscribe('milestone/events');
+  
+    client.on('message', function(topic, message){
+      console.log(topic, message);
+    })
+  }
 
   //CRUD methods for EVENTS
 

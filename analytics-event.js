@@ -24,25 +24,27 @@
         console.log(msg);
     }
 }*/
+global.XMLHttpRequest = require('xhr2');
 
-function sendXMLhttp(guid, name, hostaname, port){
+function sendXMLhttp(guid, name, hostname, port){
 
     var xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == XMLHttpRequest.DONE) {
+        if (xhr.readyState === xhr.DONE) {
+            console.log(xhr);
             return xhr.responseText;
         }
     }
 
-    xhr.open("POST","http://" + hostaname + ":" + port, true);
+    xhr.open("POST","http://" + hostname + ":" + port, true);
     xhr.setRequestHeader('Content-Type', 'text/xml');
     var xml = createXML(guid, name);
     xhr.send(escapeXml(xml));
 }
 
 function createXML(guid, name){
-    let timestamp = new Date();
+    let timestamp = new Date().toISOString();
 
     var xml = ''+
     '<?xml version="1.0" encoding="utf-8"?>'+
@@ -75,19 +77,8 @@ function createXML(guid, name){
     '   </Vendor>'+
     '</AnalyticsEvent>'
     
+    console.log(xml);
     return xml;
-}
-
-function escapeXml(unsafe) {
-    return unsafe.replace(/[<>&'"]/g, function (c) {
-        switch (c) {
-            case '<': return '&lt;';
-            case '>': return '&gt;';
-            case '&': return '&amp;';
-            case '\'': return '&apos;';
-            case '"': return '&quot;';
-        }
-    });
 }
 
 module.exports = { sendXMLhttp };
