@@ -4,27 +4,40 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         var node = this;
         var access_token;
-        var {sendXMLhttp} = require('./analytics-event.js');
+        var { sendXML } = require('./xprotect-analytics.js');
 
         node.on('input', async function (msg) {
             access_token = this.context().flow.get('access_token') || null;
-            
+
             if (access_token == null) {
                 node.warn("Login to XProtect first!");
                 return;
             }
-            const resultMsg = {payload : null};
-            let guid = msg?msg.guid:config.guid;
-            let name = msg?msg.name:config.name;
-            let hostname = msg?msg.hostname:config.hostname;
-            let port = msg?msg.port:config.port;
-            console.log(hostname, port, name, guid)
-            //function who send event and return result
-            var res = sendXMLhttp(guid, name, hostname, port);
-            console.log(res);
+            const resultMsg = { payload: null };
+            var guid = msg ? msg.guid : config.guid
+            let name = msg ? msg.name : config.name;
+            let hostname = msg ? msg.hostname : config.hostname;
+            let port = msg ? msg.port : config.port;
+            console.log(config.hostname, port, name, guid)
 
-            node.warn(res); 
-            return;    
+            let response = await sendXML(guid, name, hostname, port);
+            if (typeof response === 'string') {
+                console.log(response);
+                resultMsg.payload = response;
+            } else {
+                if (response.status === 200) {
+                    let result = await response;
+                    console.log(result);
+                    resultMsg.payload = result.statusText;
+                }
+                else {
+                    let result = await response;
+                    console.log(result);
+                    resultMsg.payload = result.statusText + ' GUID not valid';
+                }
+            }
+            node.warn(resultMsg);
+            return;
         });
 
         node.on('close', function () {
