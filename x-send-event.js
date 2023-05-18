@@ -8,31 +8,26 @@ module.exports = function (RED) {
 
         node.on('input', async function (msg) {
             access_token = this.context().flow.get('access_token') || null;
-
             if (access_token == null) {
                 node.warn("Login to XProtect first!");
                 return;
             }
             const resultMsg = { payload: null };
-            var guid = msg ? msg.guid : config.guid
-            let name = msg ? msg.name : config.name;
-            let hostname = msg ? msg.hostname : config.hostname;
-            let port = msg ? msg.port : config.port;
-            console.log(config.hostname, port, name, guid)
+            var guid = msg.hasOwnProperty('guid') ? msg.guid : config.guid;
+            let name = msg.hasOwnProperty('name') ? msg.name : config.name;
+            let hostname = msg.hasOwnProperty('hostname') ? msg.hostname : config.hostname;
+            let port = msg.hasOwnProperty('port') ? msg.port : config.port;
 
-            let response = await sendXML(guid, name, hostname, port);
+            let response = await sendXML(access_token, guid, name, hostname, port);
             if (typeof response === 'string') {
-                console.log(response);
                 resultMsg.payload = response;
             } else {
                 if (response.status === 200) {
-                    let result = await response;
-                    console.log(result);
+                    let result = response;
                     resultMsg.payload = result.statusText;
                 }
                 else {
-                    let result = await response;
-                    console.log(result);
+                    let result = response;
                     resultMsg.payload = result.statusText + ' GUID not valid';
                 }
             }

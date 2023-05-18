@@ -1,24 +1,43 @@
 var fetch = require('node-fetch');
+var Gateway = require('./xprotect-gateway.js');
+
+var api_gateway = new Gateway('http://panicucci-pc');
 
 
-async function sendXML(guid, name, hostname, port) {
-    var xml = createXML(guid, name);
-    var url = "http://" + hostname + ":" + port;
+async function sendXML(access_token, guid, name, hostname, port) {
+    var checkName = false;
+    var events;
     var xmlres = null;
 
-    await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/xml'
-        },
-        body: xml
-    }).then(async function (response) {
-        let res = await response;
-        xmlres = res;
-    }).catch(function (err) {
-        var msg = "Connection error: " + err
-        xmlres = msg;
-    });
+    //check if exist an Analytic event with this name
+    let res = await api_gateway.getAllEvents(access_token);
+    if (res.status === 200) {
+        events = await res.json();
+    }
+    for (let i = 0; i < events.array.length; i++) {
+        if (events.array[i].displayName === name) {
+            checkName = true;
+        }
+    }
+    if (checkName) {
+        var url = "http://" + hostname + ":" + port;
+        var xml = createXML(guid, name);
+        await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/xml'
+            },
+            body: xml
+        }).then(async function (response) {
+            let res = await response;
+            xmlres = res;
+        }).catch(function (err) {
+            var msg = "Connection error: " + err
+            xmlres = msg;
+        });
+    } else {
+        xmlres = "Connection error: the event '" + name + "' doesn't exist"
+    }
     return xmlres;
 }
 

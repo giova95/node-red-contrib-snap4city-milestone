@@ -1,5 +1,5 @@
-//import axios from 'axios';
-var mqtt = require("mqtt")
+var fetch = require('node-fetch');
+var mqtt = require('mqtt');
 
 class Gateway {
 
@@ -7,7 +7,6 @@ class Gateway {
     this.serverUrl = serverUrl;
   }
 
-  //test subscribe mqtt broker
   subscribe(){
     const client = mqtt.connect("mqtt://localhost");
   
@@ -21,7 +20,7 @@ class Gateway {
   //CRUD methods for EVENTS
 
   async getAllEvents(token) {
-    const url = this.serverUrl + '/API/rest/v1'
+    const url = this.serverUrl + '/API/rest/v1/analyticsEvents';
     var events = null;
     await fetch(url, {
       method: 'GET',
@@ -32,12 +31,35 @@ class Gateway {
       let res = await response;
       events = res;
     }).catch(function (error) {
-      let msg = 'Failed to retrieve rules - ' + error;
+      let msg = 'Failed to retrieve event - ' + error;
       console.log(msg);
       events = msg;
     });
     return events;
 
+  }
+
+  async addEvent(token, event){
+    const url = this.serverUrl + `/API/rest/v1/userDefinedEvents`
+
+    var ok = null;
+
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(event)
+    }).then(async function (response) {
+      let res = await response;
+      ok = res;
+    }).catch(async function (err) {
+      msg = 'Failed to add event -' + err;
+      ok = msg;
+    })
+    return ok;
   }
 
   //CRUD methods for CAMERAS
@@ -77,35 +99,6 @@ class Gateway {
     });
     return group;
   }
-
-  //FIXME: non trovo id group giusto
-  async addCamera(token, idGroup, camera) {
-    const url = this.serverUrl + `/API/rest/v1/${idGroup}/cameras`
-    const payload = {
-      name: camera.name,
-      description: camera.desc
-    };
-
-    var ok = null;
-
-    await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(payload)
-    }).then(async function (response) {
-      let res = await response.json();
-      ok = res; // reminder: status code 201
-    }).catch(async function (err) {
-      msg = 'Failed to add rule -' + err;
-      ok = msg;
-    })
-    return ok;
-  }
-
 
   //CRUD methods for RULES
 
@@ -190,6 +183,37 @@ class Gateway {
       ok = msg;
     })
     return ok;
+  }
+
+  async request(session, verb, url, token, params = {}, payload = '') {
+    const tokenstring = `Bearer ${token}`;
+    const headers = {
+      Authorization: tokenstring,
+    };
+    const options = {
+      method: verb.toLowerCase(),
+      url,
+      headers,
+      paramsSerializer: params => {
+        // dict {'param1': 'value1', 'param2': null} becomes query string 'param1=value1&param2'
+        const queryString = Object.keys(params)
+          .map(key => (params[key] === null ? key : `${key}=${params[key]}`))
+          .join('&');
+        return queryString;
+      },
+    };
+    if (verb.toLowerCase() === 'get') {
+      options.params = params;
+    } else {
+      options.data = payload;
+    }
+    try {
+      const response = await session.request(options);
+      return response;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   url(resource_plural, obj_id = null, child_item_type = null) {

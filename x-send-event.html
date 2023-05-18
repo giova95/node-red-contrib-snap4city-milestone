@@ -1,18 +1,18 @@
 <script type="text/html" data-template-name="xsend-event">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> name</label>
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-guid"><i class="fa fa-tag"></i> guid </label>
+        <label for="node-input-guid"><i class="fa fa-tag"></i> Guid </label>
         <input type="text" id="node-input-guid" placeholder="GUID">
     </div>
     <div class="form-row">
-        <label for="node-input-hostname"><i class="fa fa-tag"></i> hostname</label>
+        <label for="node-input-hostname"><i class="fa fa-tag"></i> Hostname</label>
         <input type="text" id="node-input-hostname" placeholder="Hostname">
     </div>
     <div class="form-row">
-        <label for="node-input-port"><i class="fa fa-tag"></i> port</label>
+        <label for="node-input-port"><i class="fa fa-tag"></i> Port</label>
         <input type="text" id="node-input-port" placeholder="Port">
     </div>
 </script>
@@ -22,7 +22,7 @@
         category: 'S4CXprotect',
         color: '#19CCDB',
         icon: 'icons/logocam.png',
-        inputs: 4,
+        inputs: 1,
         outputs: 1,
         label: function () {
             return this.name || 'Send Event to XProtect';
