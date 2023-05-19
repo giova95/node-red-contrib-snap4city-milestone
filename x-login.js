@@ -5,7 +5,7 @@ module.exports = function (RED) {
     function XLogin(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        var { getToken } = require("./xprotect-utility.js");
+        var { getToken, connectWSDL } = require("./xprotect-utility.js");
 
         login(config);
 
@@ -13,7 +13,7 @@ module.exports = function (RED) {
             var serverUrl = config.address; // Hostname of the management server, assuming that the API Gateway has been installed on the same host
             var username = config.user; //XProtect basic user with the XProtect Administrators role
             var password = config.password; // Password for basic user
-
+            
             //Clear the timeout for access token refresh
             if(refresh){
                 clearTimeout(refresh);
@@ -31,6 +31,8 @@ module.exports = function (RED) {
                     let tokenResponse = await response.json();
                     node.warn(tokenResponse);
                     var token = tokenResponse["access_token"];
+                    const res = await connectWSDL(username, password, token);
+                    console.log(res);
                     var expire = tokenResponse["expires_in"];
                     var refresh = setTimeout(() => login(config, refresh), (expire/2)*1000); //Set a Timer based on access token expire time
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
