@@ -36,6 +36,7 @@ async function connectWSDL(username, password, token) {
     await fetch(url, {
         method: 'GET',
         headers: {
+            'SOAPAction': 'GetAlarmLinesResponse',
             'Authorization': 'Bearer ' + token
         },
     }).then(async function (response) {
@@ -43,7 +44,7 @@ async function connectWSDL(username, password, token) {
         console.log(res);
         xmlres = res;
     }).catch(function (err) {
-        var msg = "Connection error: " + err
+        var msg = "Connection error: " + err;
         console.log(msg);
         xmlres = msg;
     });
