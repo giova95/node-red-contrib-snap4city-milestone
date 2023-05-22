@@ -28,19 +28,21 @@ async function getToken(username, password, serverUrl) {
     return token;
 }
 
-async function connectWSDL(username, password, token) {
+async function connectWSDL(token) {
 
     var xmlres;
-    var url = "http://localhost:22331/Central/AlarmServiceToken?singleWsdl";
+    var url = "http://panicucci-pc:22331/Central/AlarmServiceToken";
+    var xml = createXML(token);
 
     await fetch(url, {
-        method: 'GET',
+        method: 'POST',
         headers: {
-            'SOAPAction': 'GetAlarmLinesResponse',
-            'Authorization': 'Bearer ' + token
+            'SOAPAction': 'http://videoos.net/2/CentralServerAlarmCommand/IAlarmCommandToken/StartAlarmLineSession',
+            'Content-Type': 'text/xml'
         },
+        body: xml
     }).then(async function (response) {
-        let res = await response;
+        let res = await response.text();
         console.log(res);
         xmlres = res;
     }).catch(function (err) {
@@ -52,4 +54,29 @@ async function connectWSDL(username, password, token) {
 
 }
 
-module.exports = { getToken, connectWSDL }
+function createXML(token) {
+
+    var token1 = ''+token
+    var xml = '' +
+    '<?xml version="1.0" encoding="utf-8"?>'+
+    '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">'+
+    ' <s:Body>'+
+    '<StartAlarmLineSession xmlns="http://videoos.net/2/CentralServerAlarmCommand">'+
+        '<token>'+token1+'</token>'+
+        '<filter xmlns:a="http://schemas.datacontract.org/2004/07/VideoOS.Platform.Proxy.Alarm" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">'+
+            '<a:Conditions />'+
+            '<a:Orders>'+
+               '<a:OrderBy>'+
+                  '<a:Order>Descending</a:Order>'+
+                  '<a:Target>Timestamp</a:Target>'+
+               '</a:OrderBy>'+
+            '</a:Orders>'+
+         '</filter>'+
+      '</StartAlarmLineSession>'+
+    ' </s:Body>'+
+    '</s:Envelope>'
+
+    return xml;
+}
+
+module.exports = {getToken, connectWSDL }

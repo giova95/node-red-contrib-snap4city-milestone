@@ -46,11 +46,11 @@ module.exports = function (RED) {
                     let tokenResponse = await response.json();
                     node.warn(tokenResponse);
                     var token = tokenResponse["access_token"];
-                    const res = await connectWSDL(username, password, token);
                     var expire = tokenResponse["expires_in"];
                     var refresh = setTimeout(() => login(config, refresh), (expire/2)*1000); //Set a Timer based on access token expire time
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_token', token);
+                    const res = await connectWSDL(token);
                     return;
                 } else {
                     node.status({ fill: "red", shape: "ring", text: "Login Failed" });
