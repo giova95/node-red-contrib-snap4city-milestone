@@ -49,7 +49,7 @@ module.exports = function (RED) {
                     var expire = tokenResponse["expires_in"];
                     var refresh = setTimeout(() => login(config, refresh), (expire/2)*1000); //Set a Timer based on access token expire time
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
-                    node.context().flow.set('access_token', token);
+                    node.context().flow.set('access_tokenREST', token);
                     const res = await connectWSDL(token);
                     return;
                 } else {

@@ -1,4 +1,4 @@
-<script type="text/html" data-template-name="xsend-event">
+<script type="text/html" data-template-name="xalarm-list">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -18,14 +18,14 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('xsend-event', {
+    RED.nodes.registerType('xalarm-list', {
         category: 'S4CXprotect',
-        color: '#ffff55',
+        color: '#f8f32b',
         icon: 'icons/logocam.png',
         inputs: 1,
         outputs: 1,
         label: function () {
-            return this.name || 'Send Event to XProtect';
+            return this.name || 'Print Alarm or Event List From XProtect';
         },
         defaults: {
             name: { type: "text" },

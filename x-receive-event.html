@@ -1,4 +1,4 @@
-<script type="text/html" data-template-name="xsend-event">
+<script type="text/html" data-template-name="xreceive-event">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -18,14 +18,14 @@
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('xsend-event', {
+    RED.nodes.registerType('xreceive-event', {
         category: 'S4CXprotect',
-        color: '#ffff55',
+        color: '#ffff40',
         icon: 'icons/logocam.png',
         inputs: 1,
         outputs: 1,
         label: function () {
-            return this.name || 'Send Event to XProtect';
+            return this.name || 'Receive Event From XProtect';
         },
         defaults: {
             name: { type: "text" },

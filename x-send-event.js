@@ -7,7 +7,7 @@ module.exports = function (RED) {
         var { sendXML } = require('./xprotect-analytics.js');
 
         node.on('input', async function (msg) {
-            access_token = this.context().flow.get('access_token') || null;
+            access_token = this.context().flow.get('access_tokenREST') || null;
             if (access_token == null) {
                 node.warn("Login to XProtect first!");
                 return;
