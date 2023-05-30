@@ -7,18 +7,7 @@ class Gateway {
     this.serverUrl = serverUrl;
   }
 
-  subscribe(){
-    const client = mqtt.connect("mqtt://localhost");
-  
-    client.subscribe('milestone/events');
-  
-    client.on('message', function(topic, message){
-      console.log(topic, message);
-    })
-  }
-
-  //CRUD methods for EVENTS
-
+  //API Get for EVENTS
   async getAllEvents(token) {
     const url = this.serverUrl + '/API/rest/v1/analyticsEvents';
     var events = null;
@@ -36,33 +25,9 @@ class Gateway {
       events = msg;
     });
     return events;
-
   }
 
-  async addEvent(token, event){
-    const url = this.serverUrl + `/API/rest/v1/userDefinedEvents`
-
-    var ok = null;
-
-    await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(event)
-    }).then(async function (response) {
-      let res = await response;
-      ok = res;
-    }).catch(async function (err) {
-      msg = 'Failed to add event -' + err;
-      ok = msg;
-    })
-    return ok;
-  }
-
-  //CRUD methods for CAMERAS
+  //API Get for CAMERAS
   async getAllCameras(token) {
     const url = this.serverUrl + '/API/rest/v1/cameras';
     var cam = null;
@@ -100,8 +65,7 @@ class Gateway {
     return group;
   }
 
-  //CRUD methods for RULES
-
+  //API Get for RULES
   async getAllRules(token) {
     const url = this.serverUrl + '/API/rest/v1/rules'
     var rules = null;
@@ -119,112 +83,6 @@ class Gateway {
       rules = msg;
     });
     return rules
-  }
-
-  //FIXME: capire formato input
-  async addRule(token) {
-    const url = this.serverUrl + '/API/rest/v1/rules'
-    const payload = {
-      "enabled": true,
-      "name": "Default Start Audio Feed Rule",
-      "description": "Rule may have a long description",
-      "startRuleType": "TimeInterval",
-      "stopRuleType": "TimeInterval",
-      "always": true,
-      "withinTimeProfile": false,
-      "outsideTimeProfile": false,
-      "timeOfDayBetween": false,
-      "daysOfWeek": false,
-      "startActions": "StartFeed",
-      "stopActions": "StopFeed",
-      "relations": {
-        "self": {
-          "type": "rules",
-          "id": "43609ca5-bfdd-4238-88ff-686b6657138f"
-        }
-      }
-    };
-
-    var ok = null;
-
-    await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(payload)
-    }).then(async function (response) {
-      let res = await response;
-      ok = res; // reminder: status code 201
-    }).catch(function (err) {
-      msg = 'Failed to add rule -' + err;
-      ok = msg;
-    })
-    return ok;
-  }
-
-  async deleteRule(token, idRule) {
-    const url = this.serverUrl + '/API/rest/v1/rules/' + idRule;
-    var ok = null;
-
-    await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + token
-      }
-    }).then(async function (response) {
-      let res = await response.json();
-      ok = res;
-    }).catch(function (err) {
-      msg = 'Failed to delete rule -' + err;
-      ok = msg;
-    })
-    return ok;
-  }
-
-  async request(session, verb, url, token, params = {}, payload = '') {
-    const tokenstring = `Bearer ${token}`;
-    const headers = {
-      Authorization: tokenstring,
-    };
-    const options = {
-      method: verb.toLowerCase(),
-      url,
-      headers,
-      paramsSerializer: params => {
-        // dict {'param1': 'value1', 'param2': null} becomes query string 'param1=value1&param2'
-        const queryString = Object.keys(params)
-          .map(key => (params[key] === null ? key : `${key}=${params[key]}`))
-          .join('&');
-        return queryString;
-      },
-    };
-    if (verb.toLowerCase() === 'get') {
-      options.params = params;
-    } else {
-      options.data = payload;
-    }
-    try {
-      const response = await session.request(options);
-      return response;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-  url(resource_plural, obj_id = null, child_item_type = null) {
-    let result = `${this.serverUrl}/api/rest/v1/${resource_plural}`;
-    if (obj_id) {
-      result += `/${obj_id}`;
-    }
-    if (child_item_type) {
-      result += `/${child_item_type}`;
-    }
-    return result;
   }
 }
 

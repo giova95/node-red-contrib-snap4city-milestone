@@ -1,6 +1,10 @@
 var fetch = require('node-fetch');
+var {v4: uuidv4} = require('uuid');
+const https = require('https');
+var { xml2json } = require('xml-js');
+
 //Get a bearer access token for the MIP VMS RESTful API gateway.
-async function getToken(username, password, serverUrl) {
+async function getTokenREST(username, password, serverUrl) {
     var token = null;
     var idpUrl = serverUrl + "/API/IDP/connect/token";
 
@@ -9,13 +13,17 @@ async function getToken(username, password, serverUrl) {
     urlencoded.append("username", username);
     urlencoded.append("password", password);
     urlencoded.append("client_id", "GrantValidatorClient");
+    const httpsAgent = new https.Agent({
+        rejectUnauthorized: false,
+    });
 
     await fetch(idpUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: urlencoded
+        body: urlencoded,
+        agent: httpsAgent
     }).then(async function (response) {
         let res = await response;
         token = res;
@@ -28,55 +36,50 @@ async function getToken(username, password, serverUrl) {
     return token;
 }
 
-async function connectWSDL(token) {
-
-    var xmlres;
-    var url = "http://panicucci-pc:22331/Central/AlarmServiceToken";
-    var xml = createXML(token);
-
-    await fetch(url, {
-        method: 'POST',
-        headers: {
-            'SOAPAction': 'http://videoos.net/2/CentralServerAlarmCommand/IAlarmCommandToken/StartAlarmLineSession',
-            'Content-Type': 'text/xml'
-        },
-        body: xml
-    }).then(async function (response) {
-        let res = await response.text();
-        console.log(res);
-        xmlres = res;
-    }).catch(function (err) {
-        var msg = "Connection error: " + err;
-        console.log(msg);
-        xmlres = msg;
+async function getTokenSOAP(username, password, serverUrl){
+    var token = null;
+    var idpUrl = serverUrl + "/ManagementServer/ServerCommandService.svc";
+    var payload = createXML();
+    let auth = Buffer.from(username + ":" + password).toString('base64')
+    const httpsAgent = new https.Agent({
+        rejectUnauthorized: false,
     });
-    return xmlres;
 
+    await fetch(idpUrl, {
+        method: 'POST',
+        headers:{
+            'Content-Type': 'text/xml',
+            'SOAPAction': 'http://videoos.net/2/XProtectCSServerCommand/IServerCommandService/Login',
+            'Authorization': `Basic ${auth}`
+        },
+        body: payload,
+        agent: httpsAgent
+    }).then(async function(response){
+        let res = await response.text();
+        const json = xml2json(res);
+        console.log(json);
+        token = res;
+    }).catch(function(error){
+        var msg = "Failed to retrieve token: " + error;
+        console.log(error);
+        token = msg;
+    })
 }
 
-function createXML(token) {
-
-    var token1 = ''+token
-    var xml = '' +
-    '<?xml version="1.0" encoding="utf-8"?>'+
-    '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">'+
-    ' <s:Body>'+
-    '<StartAlarmLineSession xmlns="http://videoos.net/2/CentralServerAlarmCommand">'+
-        '<token>'+token1+'</token>'+
-        '<filter xmlns:a="http://schemas.datacontract.org/2004/07/VideoOS.Platform.Proxy.Alarm" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">'+
-            '<a:Conditions />'+
-            '<a:Orders>'+
-               '<a:OrderBy>'+
-                  '<a:Order>Descending</a:Order>'+
-                  '<a:Target>Timestamp</a:Target>'+
-               '</a:OrderBy>'+
-            '</a:Orders>'+
-         '</filter>'+
-      '</StartAlarmLineSession>'+
-    ' </s:Body>'+
-    '</s:Envelope>'
-
+function createXML(){
+    let istanceID = uuidv4();
+    var xml = ''+
+    '<?xml version="1.0" encoding="utf-8"?>' +
+    '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xpr="http://videoos.net/2/XProtectCSServerCommand">'+
+    '<soapenv:Header/>'+
+    ' <soapenv:Body>'+
+    '   <xpr:Login>'+
+    '     <xpr:instanceId>'+istanceID+'</xpr:instanceId>'+
+    '   </xpr:Login>'+
+    ' </soapenv:Body>'+
+    '</soapenv:Envelope>'
     return xml;
+
 }
 
-module.exports = {getToken, connectWSDL }
+module.exports = {getTokenREST, getTokenSOAP}
