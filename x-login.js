@@ -50,7 +50,7 @@ module.exports = function (RED) {
 
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_tokenREST', tokenREST);
-                    node.context().flow.set('access_tokenREST', tokenSOAP);
+                    node.context().flow.set('access_tokenSOAP', tokenSOAP);
                     return;
                 } else {
                     node.status({ fill: "red", shape: "ring", text: "Login Failed" });
