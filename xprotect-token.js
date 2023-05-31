@@ -1,9 +1,8 @@
 var fetch = require('node-fetch');
 var {v4: uuidv4} = require('uuid');
 const https = require('https');
-var { xml2json } = require('xml-js');
 
-//Get a bearer access token for the MIP VMS RESTful API gateway.
+//Get access token for the MIP VMS RESTful API gateway.
 async function getTokenREST(username, password, serverUrl) {
     var token = null;
     var idpUrl = serverUrl + "/API/IDP/connect/token";
@@ -29,13 +28,13 @@ async function getTokenREST(username, password, serverUrl) {
         token = res;
     }).catch(function (error) {
         var msg = "Failed to retrieve token - " + error;
-        console.log(msg);
         token = msg;
     });
 
     return token;
 }
 
+//Get access token for the MIPS VMS SOAP service
 async function getTokenSOAP(username, password, serverUrl){
     var token = null;
     var idpUrl = serverUrl + "/ManagementServer/ServerCommandService.svc";
@@ -55,15 +54,13 @@ async function getTokenSOAP(username, password, serverUrl){
         body: payload,
         agent: httpsAgent
     }).then(async function(response){
-        let res = await response.text();
-        const json = xml2json(res);
-        console.log(json);
+        let res = await response;
         token = res;
     }).catch(function(error){
         var msg = "Failed to retrieve token: " + error;
-        console.log(error);
         token = msg;
-    })
+    });
+    return token;
 }
 
 function createXML(){
