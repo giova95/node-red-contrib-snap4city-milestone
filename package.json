@@ -1,0 +1,31 @@
+{
+    "version": "",
+    "description": "",
+    "name": "s",
+    "node-red":{
+        "nodes":{
+            "x-login": "x-login.js",
+            "x-send-event": "x-send-event.js",
+            "x-alarm-list": "x-alarm-list.js",
+            "x-receive-event": "x-receive-event.js"
+        }
+    },
+    "keywords":[
+        "node-red",
+        "smartcity",
+        "iot",
+        "VMS",
+        "Milestone",
+        "XProtect",
+        "Protocol Integration"
+    ],
+    "author":"",
+    "license":"",
+    "bundleDependencies": false,
+    "dependencies":{
+        "jsontoxml": "^1.0.1",
+        "uuid": "^9.0.0",
+        "xml-js": "^1.6.11",
+        "xml2js": "^0.6.0"
+    }
+}
