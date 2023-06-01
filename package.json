@@ -1,7 +1,7 @@
 {
     "version": "",
-    "description": "",
-    "name": "s",
+    "description": "Node-Red integration to communicate with Milestone XProtect VMS",
+    "name": "node-red-contrib-snap4city-milestone",
     "node-red":{
         "nodes":{
             "x-login": "x-login.js",

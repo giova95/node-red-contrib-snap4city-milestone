@@ -20,9 +20,6 @@ async function getAlarmList(tokenSOAP, node) {
         }
 
     }
-
-
-
 }
 
 async function startAlarmSession(tokenSOAP, node) {

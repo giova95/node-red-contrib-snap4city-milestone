@@ -36,3 +36,41 @@
     </div>
 </script>
 
+<script type="text/x-red" data-help-name="service-search">
+    <p>With this node you can send an event to the event server and trigger an Alarm with the possibility to activate a rule associated with it.</p>
+    
+    <h3>Inputs</h3>
+    <p>A JSON with these parameters:</p>
+    
+    <dl class="message-properties">
+       <dt>Name
+           <span class="property-type">string</span>
+       </dt>
+       <dd>The name of the event which will be send and trigger. The event must exist in the VMS.</dd>
+       
+       <dt>Guid
+           <span class="property-type">string</span>
+       </dt>
+       <dd>The Guid associated with a hardware device in the Milestone VMS(e.g. Camera, Microphone). Device must be registered.</dd>
+       
+       <dt>Hostname
+            <span class="property-type">string</span>
+       </dt>
+       <dd>The hostname where the Milestone VMS runs on. Only http or https are allowed</dd>
+
+       <dt>Port
+            <span class="property-type">string</span>
+       </dt>
+       <dd>The port that allows send analytics events to the VMS, which must be activated(default 9090). Check the XProtect documentation for more details.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+     <dl class="message-properties">
+         <dd>A JSON file containing the result of sending analytics events to VMS, with any errors.</dd>
+     </dl>
+     
+    <h3>Details</h3>
+     <p>The node can receive the parameters described in the Inputs section and with them generate the output JSON. If the values are not present in the input JSON, 
+        these are read by those in the configuration. If they are not present in either part or are wrong, an error is generated for the necessary parameters 
+        or the reason why are not correct.</p>
+</script>

@@ -31,7 +31,7 @@ module.exports = function (RED) {
                     resultMsg.payload = result.statusText + ' GUID not valid';
                 }
             }
-            node.warn(resultMsg);
+            node.send(resultMsg);
             return;
         });
 
