@@ -13,10 +13,10 @@ module.exports = function (RED) {
                 return;
             }
             const resultMsg = { payload: null };
-            var guid = msg.hasOwnProperty('guid') ? msg.guid : config.guid;
-            let name = msg.hasOwnProperty('name') ? msg.name : config.name;
-            let hostname = msg.hasOwnProperty('hostname') ? msg.hostname : config.hostname;
-            let port = msg.hasOwnProperty('port') ? msg.port : config.port;
+            var guid = msg.payload.hasOwnProperty('guid') ? msg.payload.guid : config.guid;
+            let name = msg.payload.hasOwnProperty('name') ? msg.payload.name : config.name;
+            let hostname = msg.payload.hasOwnProperty('hostname') ? msg.payload.hostname : config.hostname;
+            let port = msg.payload.hasOwnProperty('port') ? msg.payload.port : config.port;
 
             let response = await sendXML(access_token, guid, name, hostname, port);
             if (typeof response === 'string') {
