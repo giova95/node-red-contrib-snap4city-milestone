@@ -1,3 +1,22 @@
+<script type="text/javascript">
+    RED.nodes.registerType('xsend-event', {
+        category: 'S4CXprotect',
+        color: '#fde910',
+        icon: 'icons/logocam.png',
+        inputs: 1,
+        outputs: 1,
+        label: function () {
+            return this.name || 'Send Event to XProtect';
+        },
+        defaults: {
+            name: { type: "text" },
+            guid: { type: "text" },
+            hostname: { type: 'text' },
+            port: { type: "text" },
+        }
+    });
+</script>
+
 <script type="text/html" data-template-name="xsend-event">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
@@ -17,21 +36,87 @@
     </div>
 </script>
 
-<script type="text/javascript">
-    RED.nodes.registerType('xsend-event', {
-        category: 'S4CXprotect',
-        color: '#ffff55',
-        icon: 'icons/logocam.png',
-        inputs: 1,
-        outputs: 1,
-        label: function () {
-            return this.name || 'Send Event to XProtect';
-        },
-        defaults: {
-            name: { type: "text" },
-            guid: { type: "text" },
-            hostname: { type: 'text' },
-            port: { type: "text" },
-        }
-    });
+<script type="text/x-red" data-help-name="service-search">
+    <p>It allows to Login to Milestone VMS </p>
+
+    <h3>Inputs</h3>
+    A JSON with these parameters:
+
+    <dl class="message-properties">
+        <dt>selection
+            <span class="property-type">string</span>
+        </dt>
+        <dd> “ &lt;lat>; &lt;lng>” with a GPS position or “ &lt;lat1>; &lt;lng1>; &lt;lat2>; &lt;lng2>” for a rectangular area
+            or “wkt: &lt;WKT_string>” or “geo: &lt;geoid>” for a geographic area described as Well Known Text</dd>
+        
+		<dt>filter
+            <span class="property-type">string</span>
+        </dt>
+        <dd> a list of conditions (separated with ;) on value names matching a constant value. The matching operator can be:
+            <ul>
+			<li><em>value name</em>:<em>string value</em> (e.g status:Active), search for devices having the dynamic string attribute "value name" with a specific value, the match is case sensitive</li>
+			<li><em>value name</em>=<em>numeric value</em> (e.g. temperature=18), search for devices having the dynamic numeric attribute "value name" with a specific numeric value.</li>
+			<li><em>value name</em>&gt;<em>numeric value</em> (e.g. temperature&gt;20), search for devices having a dynamic numeric attribute greater than a specific value.</li>
+			<li><em>value name</em>&gt;=<em>numeric value</em> (e.g. temperature&gt;20), search for devices having a dynamic numeric attribute greater or equal than a specific value.</li>
+			<li><em>value name</em>&lt;<em>numeric value</em> (e.g. temperature&lt;20), search for devices having a dynamic numeric attribute less than a specific value.</li>
+			<li><em>value name</em>&lt;=<em>numeric value</em> (e.g. temperature&lt;=20), search for devices having a dynamic numeric attribute less or equal than a specific value.</li>
+			</ul>
+		If multiple conditions are present they are considered in AND.
+		<dt>values
+            <span class="property-type">string</span>
+        </dt>
+        <dd> If filter is not empty, list of value names (separated by ;) to be returned for each result, if omitted all values are returned.</dd>
+        <dt>sortOnValue
+            <span class="property-type">string</span>
+        </dt>
+        <dd> If filter is not empty, the value name to sort the result, it can be like "value name:asc|desc:type" (e.g. temperature:desc:short), order direction 
+		is "asc" if omitted, type can be string, date, long or short (if type is omitted string is assumed). The type is used to force sorting 
+		for dates and numbers. If the parameter is omitted the sort is on the distance from GPS position, if "none" is specified no specific 
+		sort is used.</dd>
+		<dt>categories
+            <span class="property-type">string</span>
+        </dt>
+        <dd> the list of categories of the services to be retrieved separated with semicolon, if omitted all kinds of services
+            are returned. It can contain macro categories or categories, if a macro category is specified all categories
+            in the macro category are used. The complete list of categories and macro categories can be retrieved on servicemap.disit.org</dd>
+		<dt>model
+            <span class="property-type">string</span>
+        </dt>
+        <dd> search for iot devices created with a specific model name.</dd>	
+		<dt>maxresults
+            <span class="property-type">number</span>
+        </dt>
+        <dd> maximum number of results to be returned (if parameter is missing 100 is assumed), if it is 0 all results are returned</dd>	
+        <dt>maxdistance
+            <span class="property-type">number</span>
+        </dt>
+        <dd> maximum distance from the GPS position of the services to be retrieved, expressed in Km (0.1 is used if parameter
+            is missing) if it is equal to “inside” it searches for services with a WKT geometry that contains the specified
+            GPS position (e.g a park)</dd>
+        <dt>lang
+            <span class="property-type">string</span>
+        </dt>
+        <dd> ISO 2 chars language code (e.g. “it”, “en”, “fr”, “de”, “es”) to be used for returned descriptions if available in
+            multiple languages. Currently for languages other than “it” and “en” it returns “en” descriptions. (if parameter
+            is missing “en” is assumed)</dd>
+        <dt>geometry
+            <span class="property-type">boolean</span>
+        </dt>
+        <dd> true/false, if true it returns a “hasGeometry” property for each service stating if the service has a complex WKT
+            geometries (linestring, polygon) associated with it (if parameter is missing “false” is assumed)</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dd> It returns the services split in three sections (BusStops , SensorSites, Services). Each section is provided as GeoJSON
+            “FeatureCollection”, the results are sorted by distance, additionally in each section the “fullCount” property
+            reports the full number of results available matching the query. The results can be filtered to be within within a range of values 
+			specified in the filter field.</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>The node can receive a JSON with the parameters described in the Inputs section and with them generate the output JSON.
+        If the values are not present in the input JSON, these are read by those in the configuration. If they are not present
+        in either part, an error is generated for the necessary parameters.</p>
+
 </script>

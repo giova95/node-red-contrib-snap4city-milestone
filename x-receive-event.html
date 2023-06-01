@@ -1,3 +1,22 @@
+<script type="text/javascript">
+    RED.nodes.registerType('xreceive-event', {
+        category: 'S4CXprotect',
+        color: '#fde910',
+        icon: 'icons/logocam.png',
+        inputs: 1,
+        outputs: 1,
+        label: function () {
+            return this.name || 'Receive Event From XProtect';
+        },
+        defaults: {
+            name: { type: "text" },
+            guid: { type: "text" },
+            hostname: { type: 'text' },
+            port: { type: "text" },
+        }
+    });
+</script>
+
 <script type="text/html" data-template-name="xreceive-event">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
@@ -17,21 +36,3 @@
     </div>
 </script>
 
-<script type="text/javascript">
-    RED.nodes.registerType('xreceive-event', {
-        category: 'S4CXprotect',
-        color: '#ffff40',
-        icon: 'icons/logocam.png',
-        inputs: 1,
-        outputs: 1,
-        label: function () {
-            return this.name || 'Receive Event From XProtect';
-        },
-        defaults: {
-            name: { type: "text" },
-            guid: { type: "text" },
-            hostname: { type: 'text' },
-            port: { type: "text" },
-        }
-    });
-</script>

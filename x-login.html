@@ -1,51 +1,89 @@
+<script type="text/javascript">
+   RED.nodes.registerType('x-login', {
+      category: 'S4CXprotect',
+      color: '#fde910',
+      inputs: 0,
+      outputs: 1,
+      icon: 'icons/logocam.png',
+      label: function () {
+         return this.name || 'Login to Milestone';
+      },
+      defaults: {
+         address: {
+            type: 'text',
+            value: '',
+            validate: function (v) {
+               let url;
+               try {
+                  url = new URL(v);
+               } catch (_) {
+                  return false;
+               }
+               return url.protocol === "http:" || url.protocol === "https:";
+            }
+         },
+         user: { type: 'text' },
+         password: { type: 'password' }
+      }
+   });
+
+</script>
+
 <script type="text/html" data-template-name="x-login">
   <!-- Address -->
 <div class="form-row">
-  <label for="node-input-address"><i class="fa fa-tag"></i> Address</label>
-  <input id="node-input-address" type="text" placeholder="http://">
+   <label for="node-input-address"><i class="fa fa-tag"></i> Address</label>
+   <input id="node-input-address" type="text" placeholder="http://">
 </div>
 <!-- Basic Authentication -->
 <div id="node-row-basic-auth">
-  <!-- User -->
-  <div class="form-row">
-     <label for="node-input-user"><i class="fa fa-tag"></i> User</label>
-     <input type="text" id="node-input-user" placeholder="User">
-  </div>
-  <!-- Password -->
-  <div class="form-row">
-     <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
-     <input type="password" id="node-input-password" placeholder="Password">
-  </div>
+   <!-- User -->
+   <div class="form-row">
+      <label for="node-input-user"><i class="fa fa-tag"></i> User</label>
+      <input type="text" id="node-input-user" placeholder="User">
+   </div>
+   <!-- Password -->
+   <div class="form-row">
+      <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
+      <input type="password" id="node-input-password" placeholder="Password">
+   </div>
 </div>
 </script>
 
-<script type="text/javascript">
-  RED.nodes.registerType('x-login', {
-     category: 'S4CXprotect',
-     color: '#fde910',
-     inputs: 0,
-     outputs: 0,
-     icon: 'icons/logocam.png',
-     label: function () {
-        return this.name || 'Login to Milestone';
-     },
-     defaults: {
-        address: {
-           type: 'text',
-           value: '',
-           validate: function (v) {
-              let url;
-              try {
-                 url = new URL(v);
-              } catch (_) {
-                 return false;
-              }
-              return url.protocol === "http:" || url.protocol === "https:";
-           }
-        },
-        user: { type: 'text' },
-        password: { type: 'password' }
-     }
-  });
+<script type="text/x-red" data-help-name="x-login">
+   <p>It allows to Login to Milestone VMS with a basic user account with administrator role. Allows you to receive both the token for the REST and for the SOAP api
+      with the same credentials.
+   </p>
+
+   <h3>Inputs</h3>
+   <p>There aren't inputs. The credentials required for login are entered in the configuration and they are as follows:
+   </p>
+
+   <dl class="message-properties">
+     <dt>Address
+         <span class="property-type">string</span>
+     </dt>
+     <dd>A valid hostname where the Milestone VMS runs on. Only http or https are allowed</dd>
+
+     <dt>Username
+         <span class="property-type">string</span>
+     </dt>
+     <dd>A valid username present in the Milestone VMS, registered as basic user</dd>
+     
+     <dt>Username
+      <span class="property-type">string</span>
+     </dt>
+     <dd>A valid password for the username below</dd>
+   </dl>
+
+   <h3>Outputs</h3>
+   <dl class="message-properties">
+       <dd>It communicates if login operation is successful, if so returns both tokens and their expire time.</dd>
+   </dl>
+
+   <h3>Details</h3>
+   <p>The node can receive the parameters described above in the configuration, check that data are correct and if so
+      returns a JSON with the information listed before, otherwise a JSON with the reason for the error
+   </p>
 
 </script>
