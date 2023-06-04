@@ -3,8 +3,6 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         var node = this;
         var access_token;
-        var sessionId;
-        var { xml2json } = require('xml-js');
         var { getAlarmList } = require('./xprotect-eventserver.js')
 
         node.on('input', async function (msg) {
@@ -13,26 +11,20 @@ module.exports = function (RED) {
                 node.warn("Login to XProtect first!");
                 return;
             }
+            const resultMsg = { payload: null };
+            let maxLines = msg.payload.hasOwnProperty('maxLines') ? msg.payload.maxLines : config.maxLines;
+            let order = msg.payload.hasOwnProperty('order') ? msg.payload.order : config.order;
+            let target = msg.payload.hasOwnProperty('target') ? msg.payload.target : config.target;
+
             //Get alarm lines
-            var list = await getAlarmList(access_token, node);
-
-            //intestazione tabella
-            for (let i = 0; i < list.length; i++) {
-                let title = '';
-                for (let j = 0; j < 24; j++) {
-                    let line = list[i].elements[j];
-                    title += line.name + ' ';
-                    console.log(line.hasOwnProperty(elements))
-                    //if (line.hasOwnProperty(elements)) {
-                      //  console.log(line.elements[0].name)
-                    //}
-
-                }
-                //console.log(title + "\n");
-            }
+            let res = await getAlarmList(access_token, node, maxLines, order, target);
+            
+            //TODO: trovare metodo per risultato pulito
+            node.send(resultMsg);
+            return;
         });
 
-        node.on('close', function () {
+        node.on('close', function (){
 
         });
 

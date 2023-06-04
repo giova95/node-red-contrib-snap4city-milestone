@@ -4,10 +4,12 @@ const https = require('https');
 var { xml2json } = require('xml-js');
 
 
-async function getAlarmList(tokenSOAP, node) {
+
+//TODO:gestire response come negli altri blocchi, error propagati come stringhe e poi error e send resultMsg come JSON
+async function getAlarmList(tokenSOAP, node, maxLines, order, target) {
     var sessionId = await startAlarmSession(tokenSOAP, node);
     if (sessionId !== null) {
-        const resList = await getAlarmLines(tokenSOAP, sessionId);
+        const resList = await getAlarmLines(tokenSOAP, sessionId,  maxLines, order, target);
         const xmlList = await resList.text();
         const jsonList = JSON.parse(xml2json(xmlList));
 
@@ -39,9 +41,9 @@ async function startAlarmSession(tokenSOAP, node) {
 }
 
 
-async function getAlarmLines(tokenSOAP, sessionId) {
+async function getAlarmLines(tokenSOAP, sessionId,  maxLines, order, target) {
     let url = 'http://localhost:22331/Central/AlarmServiceToken';
-    let payload = getXML(tokenSOAP, sessionId);
+    let payload = getXML(tokenSOAP, sessionId,  maxLines, order, target);
 
     await fetch(url, {
         method: 'POST',
@@ -85,7 +87,7 @@ async function getSessionId(tokenSOAP) {
 
 }
 
-function startXML(tokenSOAP) {
+function  startXML(tokenSOAP) {
 
     var xml = '' +
         '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
@@ -99,7 +101,7 @@ function startXML(tokenSOAP) {
     return xml;
 }
 
-function getXML(tokenSOAP, sessionId) {
+function getXML(tokenSOAP, sessionId,  maxLines, order, target) {
     var xml = '' +
         '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
         ' <s:Body>' +
@@ -107,13 +109,13 @@ function getXML(tokenSOAP, sessionId) {
         '     <token>' + tokenSOAP + '</token>' +
         '     <sessionId>' + sessionId + '</sessionId>' +
         '     <from>0</from>' +
-        '     <maxCount>10</maxCount>' +
+        '     <maxCount>'+ maxLines +'</maxCount>' +
         '     <filter xmlns:a="http://schemas.datacontract.org/2004/07/VideoOS.Platform.Proxy.Alarm" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">' +
         '        <a:Conditions />' +
         '        <a:Orders>' +
         '           <a:OrderBy>' +
-        '              <a:Order>Descending</a:Order>' +
-        '              <a:Target>Timestamp</a:Target>' +
+        '              <a:Order>'+ order +'</a:Order>' +
+        '              <a:Target>'+ target +'</a:Target>' +
         '           </a:OrderBy>' +
         '        </a:Orders>' +
         '     </filter>' +

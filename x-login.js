@@ -12,6 +12,10 @@ module.exports = function (RED) {
             var username = config.user; // XProtect basic user with the XProtect Administrators role
             var password = config.password; // Password for basic user
 
+            var resultMsg = {
+                payload: null
+            }
+
             //Clear the timeout for access tokens refresh
             if(refreshREST){
                 clearTimeout(refreshREST);
@@ -28,7 +32,9 @@ module.exports = function (RED) {
 
             if (typeof responseREST === "string" && typeof responseSOAP === "string") {
                 node.status({ fill: "yellow", shape: "ring", text: "Try to login" });
-                let error = new Error("Server Address Not Found, Please verify if it exists");
+                let err = "Server Address Not Found, Please verify if it exists";
+                resultMsg.payload = err;
+                let error = new Error(err);
                 node.error(error);
             } else {
                 if (responseREST.status === 200 && responseSOAP.status === 200) {
@@ -43,6 +49,8 @@ module.exports = function (RED) {
                     const Element = jsonSOAP.elements[0].elements[0].elements[0].elements[0];
                     const tokenSOAP = Element.elements[3].elements[0].text;
                     const expireSOAP = (Element.elements[1].elements[0].elements[0].text)/1000;
+                    resultMsg.payload = jsonREST+tokenSOAP+expireSOAP;
+                    console.log(resultMsg);
 
                     //Set a Timer based on access tokens expire time
                     var refreshREST = setTimeout(() => login(config, refresh), (expireREST/2)*1000); 
@@ -51,14 +59,16 @@ module.exports = function (RED) {
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_tokenREST', tokenREST);
                     node.context().flow.set('access_tokenSOAP', tokenSOAP);
-                    return;
                 } else {
                     node.status({ fill: "red", shape: "ring", text: "Login Failed" });
-                    let error = new Error(await responseREST.text());
+                    let err = await responseREST.text();
+                    resultMsg.payload = err;
+                    let error = new Error(err);
                     node.error(error);
-                    return;
                 }
             }
+            node.send(resultMsg)
+            return;
         }
 
     }
