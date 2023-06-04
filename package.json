@@ -2,15 +2,15 @@
     "version": "",
     "description": "Node-Red integration to communicate with Milestone XProtect VMS",
     "name": "node-red-contrib-snap4city-milestone",
-    "node-red":{
-        "nodes":{
+    "node-red": {
+        "nodes": {
             "x-login": "x-login.js",
             "x-send-event": "x-send-event.js",
             "x-alarm-list": "x-alarm-list.js",
-            "x-receive-event": "x-receive-event.js"
+            "x-receive-events": "x-receive-events.js"
         }
     },
-    "keywords":[
+    "keywords": [
         "node-red",
         "smartcity",
         "iot",
@@ -19,10 +19,10 @@
         "XProtect",
         "Protocol Integration"
     ],
-    "author":"",
-    "license":"",
-    "bundleDependencies": false,
-    "dependencies":{
+    "author": "",
+    "license": "",
+    "bundleDependencies": [],
+    "dependencies": {
         "jsontoxml": "^1.0.1",
         "uuid": "^9.0.0",
         "xml-js": "^1.6.11",

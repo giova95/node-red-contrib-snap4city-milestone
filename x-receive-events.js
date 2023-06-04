@@ -1,5 +1,5 @@
 module.exports = function (RED) {
-    function XReceiveEvent(config) {
+    function XReceiveEvents(config) {
         RED.nodes.createNode(this, config);
         var node = this;
         var access_token;
@@ -19,5 +19,5 @@ module.exports = function (RED) {
 
     }
 
-    RED.nodes.registerType("xreceive-event", XReceiveEvent);
+    RED.nodes.registerType("xreceive-events", XReceiveEvents);
 };

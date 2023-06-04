@@ -32,7 +32,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="service-search">
+<script type="text/x-red" data-help-name="xalarm-list">
     <p>With this node you can send an event to the event server and trigger an Alarm with the possibility to activate a rule associated with it.</p>
     
     <h3>Inputs</h3>
@@ -53,14 +53,15 @@
             <span class="property-type">string</span>
        </dt>
        <dd>The target property of the sorting for the alarms. They're displayed with a drop-down menu</dd>
+    </dl>
 
     <h3>Outputs</h3>
      <dl class="message-properties">
-         <dd>A JSON file containing an alarm list received from the event server</dd>
+         <dd>A JSON file containing an alarm list received from the event server with information about them.</dd>
      </dl>
      
     <h3>Details</h3>
      <p>The node can receive the parameters described in the Inputs section, with them generates a XML file with which a SOAP request is sent to the event server. 
-        A server response with the alarm list generates the output JSON. If the values are not present in the input JSON, these are read by those in the configuration. 
+        A server response with the alarm list generates the output JSON. If the values are not present in the input JSON, these are read by those in the node properties. 
         If they are not present in either part or are wrong, an error is generated for the necessary parameters or the reason why are not correct.</p>
 </script>

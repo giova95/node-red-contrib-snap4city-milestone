@@ -1,12 +1,12 @@
 <script type="text/javascript">
-    RED.nodes.registerType('xreceive-event', {
+    RED.nodes.registerType('xreceive-events', {
         category: 'S4CXprotect',
         color: '#fde910',
         icon: 'icons/logocam.png',
         inputs: 1,
         outputs: 1,
         label: function () {
-            return this.name || 'Receive Event From XProtect';
+            return this.name || 'Receive Events From XProtect';
         },
         defaults: {
             name: { type: "text" },
@@ -17,7 +17,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="xreceive-event">
+<script type="text/html" data-template-name="xreceive-events">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -36,41 +36,36 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="service-search">
-    <p>With this node you can send an event to the event server and trigger an Alarm with the possibility to activate a rule associated with it.</p>
+<script type="text/x-red" data-help-name="xreceive-events">
+    <p>With this node you can receive events from Milestone VMS through the event server</p>
     
     <h3>Inputs</h3>
     <p>A JSON with these parameters:</p>
     
     <dl class="message-properties">
-       <dt>Name
-           <span class="property-type">string</span>
-       </dt>
-       <dd>The name of the event which will be send and trigger. The event must exist in the VMS.</dd>
-       
-       <dt>Guid
-           <span class="property-type">string</span>
-       </dt>
-       <dd>The Guid associated with a hardware device in the Milestone VMS(e.g. Camera, Microphone). Device must be registered.</dd>
-       
-       <dt>Hostname
+        <dt>Timer
             <span class="property-type">string</span>
-       </dt>
-       <dd>The hostname where the Milestone VMS runs on. Only http or https are allowed</dd>
+        </dt>
+        <dd>A timer indicating how often to request new events.</dd>
 
-       <dt>Port
+        <dt>Order
             <span class="property-type">string</span>
-       </dt>
-       <dd>The port that allows send analytics events to the VMS, which must be activated(default 9090). Check the XProtect documentation for more details.</dd>
+        </dt>
+        <dd>The sorting type for the alarms.(Basically descending/ascending).</dd>
+        
+        <dt>Target
+             <span class="property-type">string</span>
+        </dt>
+        <dd>The target property of the sorting for the alarms. They're displayed with a drop-down menu</dd>
     </dl>
 
     <h3>Outputs</h3>
      <dl class="message-properties">
-         <dd>A JSON file containing the result of sending analytics events to VMS, with any errors.</dd>
+         <dd>A JSON file containing a list of newly arrived events received from the event server with information about them.</dd>
      </dl>
      
     <h3>Details</h3>
      <p>The node can receive the parameters described in the Inputs section and with them generate the output JSON. If the values are not present in the input JSON, 
-        these are read by those in the configuration. If they are not present in either part or are wrong, an error is generated for the necessary parameters 
-        or the reason why are not correct.</p>
+        these are read by those in the node properties. If they are not present in either part or are wrong, an error is generated for the necessary parameters 
+        or the reason why are not correct. Note that real time is simulated by making timed requests to the event server and checking the events state</p>
 </script>
