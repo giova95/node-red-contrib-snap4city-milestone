@@ -9,30 +9,25 @@
             return this.name || 'Receive Events From XProtect';
         },
         defaults: {
-            name: { type: "text" },
-            guid: { type: "text" },
-            hostname: { type: 'text' },
-            port: { type: "text" },
+            timer: { type: "text" },
+            order: { type: "text" },
+            target: { type: 'text' }
         }
     });
 </script>
 
 <script type="text/html" data-template-name="x-receive-events">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
+        <label for="node-input-timer"><i class="fa fa-tag"></i> Timer</label>
+        <input type="text" id="node-input-timer" placeholder="Timer">
     </div>
     <div class="form-row">
-        <label for="node-input-guid"><i class="fa fa-tag"></i> Guid </label>
-        <input type="text" id="node-input-guid" placeholder="GUID">
+        <label for="node-input-order"><i class="fa fa-tag"></i> Order</label>
+        <input type="text" id="node-input-order" placeholder="Order">
     </div>
     <div class="form-row">
-        <label for="node-input-hostname"><i class="fa fa-tag"></i> Hostname</label>
-        <input type="text" id="node-input-hostname" placeholder="Hostname">
-    </div>
-    <div class="form-row">
-        <label for="node-input-port"><i class="fa fa-tag"></i> Port</label>
-        <input type="text" id="node-input-port" placeholder="Port">
+        <label for="node-input-target"><i class="fa fa-tag"></i> Target</label>
+        <input type="text" id="node-input-target" placeholder="Target">
     </div>
 </script>
 
@@ -56,7 +51,7 @@
         <dt>Target
              <span class="property-type">string</span>
         </dt>
-        <dd>The target property of the sorting for the alarms. They're displayed with a drop-down menu</dd>
+        <dd>The target property of the sorting for the alarms. (They're displayed with a drop-down menu in node properties).</dd>
     </dl>
 
     <h3>Outputs</h3>

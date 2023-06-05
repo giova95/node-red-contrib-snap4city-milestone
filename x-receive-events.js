@@ -15,7 +15,8 @@ module.exports = function (RED) {
             let order = msg.payload.hasOwnProperty('order') ? msg.payload.order : config.order;
             let target = msg.payload.hasOwnProperty('target') ? msg.payload.target : config.target;
 
-            var res = await getEvents(access_token, node, timer, order, target)
+            var res = await getEvents(access_token, node, timer, order, target);
+            console.log(res);
 
             node.send(resultMsg);
             return;

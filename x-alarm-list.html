@@ -9,10 +9,9 @@
             return this.name || 'Print Alarm or Event List From XProtect';
         },
         defaults: {
-            name: { type: "text" },
-            guid: { type: "text" },
-            hostname: { type: 'text' },
-            port: { type: "text" },
+            maxLines: { type: 'text' },
+            order: { type: 'text' },
+            target: { type: 'text' },
         }
     });
 </script>
@@ -23,12 +22,21 @@
         <input type="text" id="node-input-maxLines" placeholder="Max lines">
     </div>
     <div class="form-row">
-        <label for="node-input-guid"><i class="fa fa-tag"></i> Order</label>
-        <input type="text" id="node-input-guid" placeholder="Order">
+        <label for="node-input-order"><i class="fa fa-tag"></i>Order</label>
+        <select id="node-input-order" type="text">
+            <option value ="Descending">Descending</option>
+            <option value="Ascending">Ascending</option>
+        </select>
     </div>
     <div class="form-row">
-        <label for="node-input-hostname"><i class="fa fa-tag"></i> Target</label>
-        <input type="text" id="node-input-hostname" placeholder="Target">
+        <label for="node-input-target"><i class="fa fa-tag"></i> Target</label>
+        <select id="node-input-target" type="text">
+            <option value="LocalId">Id</option>
+            <option value="Timestamp">Timestamp</option>
+            <option value="StateName">StateName</option>
+            <option value="SourceName">SourceName</option>
+            <option value="Type">Type</option>
+        </select>
     </div>
 </script>
 
@@ -47,7 +55,7 @@
        <dt>Order
            <span class="property-type">string</span>
        </dt>
-       <dd>The sorting type for the alarms.(Basically descending/ascending).</dd>
+       <dd>The sorting type for the alarms.(Basically descending/ascending displayed in a drop-down menu in node properties).</dd>
        
        <dt>Target
             <span class="property-type">string</span>

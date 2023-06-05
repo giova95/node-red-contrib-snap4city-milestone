@@ -3,7 +3,7 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         var node = this;
         var access_token;
-        var { getAlarmList } = require('./xprotect-eventserver.js')
+        var { getAlarmList} = require('./xprotect-eventserver.js')
 
         node.on('input', async function (msg) {
             access_token = this.context().flow.get('access_tokenSOAP') || null;
@@ -14,12 +14,14 @@ module.exports = function (RED) {
             const resultMsg = { payload: null };
             let maxLines = msg.payload.hasOwnProperty('maxLines') ? msg.payload.maxLines : config.maxLines;
             let order = msg.payload.hasOwnProperty('order') ? msg.payload.order : config.order;
-            let target = msg.payload.hasOwnProperty('target') ? msg.payload.target : config.target;
-
-            //Get alarm lines
-            let res = await getAlarmList(access_token, node, maxLines, order, target);
+            let target = msg.payload.hasOwnProperty('target') ? msg.payload.target : config.target;            
             
-            //TODO: trovare metodo per risultato pulito
+            //Get alarm lines
+            let res = await getAlarmList(access_token, maxLines, order, target);
+            node.warn(res);
+
+            //Update JSON output
+            resultMsg.payload = res;
             node.send(resultMsg);
             return;
         });
