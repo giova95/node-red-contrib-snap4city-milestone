@@ -24,9 +24,12 @@ module.exports = function (RED) {
             } else {
                 if (response.status === 200) {
                     let result = response;
-                    resultMsg.payload = result.statusText;
+                    resultMsg.payload = result.statusText + " Event sent correctly";
                 }
-                else {
+                else if(response.status === 405){
+                    let result = response;
+                    resultMsg.payload = result.statusText + " Port cannot be empty";
+                }else{
                     let result = response;
                     resultMsg.payload = result.statusText + ' GUID not valid';
                 }
