@@ -27,5 +27,5 @@ module.exports = function (RED) {
 
     }
 
-    RED.nodes.registerType("xreceive-events", XReceiveEvents);
+    RED.nodes.registerType("x-receive-events", XReceiveEvents);
 };

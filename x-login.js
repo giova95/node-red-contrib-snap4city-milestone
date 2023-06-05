@@ -13,7 +13,13 @@ module.exports = function (RED) {
             var password = config.password; // Password for basic user
 
             var resultMsg = {
-                payload: null
+                payload: {
+                    tokenREST: null,
+                    tokenSOAP: null,
+                    expireREST: null,
+                    expireSOAP: null,
+                    error: 'none'
+                }
             }
 
             //Clear the timeout for access tokens refresh
@@ -33,9 +39,8 @@ module.exports = function (RED) {
             if (typeof responseREST === "string" && typeof responseSOAP === "string") {
                 node.status({ fill: "yellow", shape: "ring", text: "Try to login" });
                 let err = "Server Address Not Found, Please verify if it exists";
-                resultMsg.payload = err;
-                let error = new Error(err);
-                node.error(error);
+                //update results JSON
+                resultMsg.payload.error = err;
             } else {
                 if (responseREST.status === 200 && responseSOAP.status === 200) {
                     // manage REST response
@@ -48,23 +53,27 @@ module.exports = function (RED) {
                     let jsonSOAP = JSON.parse(xml2json(resSOAP));
                     const Element = jsonSOAP.elements[0].elements[0].elements[0].elements[0];
                     const tokenSOAP = Element.elements[3].elements[0].text;
-                    const expireSOAP = (Element.elements[1].elements[0].elements[0].text)/1000;
-                    resultMsg.payload = jsonREST+tokenSOAP+expireSOAP;
-                    console.log(resultMsg);
+                    const expireSOAP = (Element.elements[1].elements[0].elements[0].text)/1000000;
+
+                    //update results JSON
+                    resultMsg.payload.tokenREST = tokenREST;
+                    resultMsg.payload.expireREST = expireREST;
+                    resultMsg.payload.tokenSOAP = tokenSOAP;
+                    resultMsg.payload.expireSOAP = expireSOAP
 
                     //Set a Timer based on access tokens expire time
                     var refreshREST = setTimeout(() => login(config, refresh), (expireREST/2)*1000); 
-                    var refreshSOAP = setTimeout(() => login(config, refresh), (expireSOAP/2));
+                    var refreshSOAP = setTimeout(() => login(config, refresh), (expireSOAP/2)*1000);
 
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_tokenREST', tokenREST);
                     node.context().flow.set('access_tokenSOAP', tokenSOAP);
                 } else {
                     node.status({ fill: "red", shape: "ring", text: "Login Failed" });
-                    let err = await responseREST.text();
-                    resultMsg.payload = err;
-                    let error = new Error(err);
-                    node.error(error);
+                    let jsonerr = await responseREST.json();
+                    let err = jsonerr['error_description'];
+                    //update results JSON
+                    resultMsg.payload.error = err;
                 }
             }
             node.send(resultMsg)

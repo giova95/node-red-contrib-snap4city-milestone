@@ -40,5 +40,5 @@ module.exports = function (RED) {
 
     }
 
-    RED.nodes.registerType("xsend-event", XSendEvent);
+    RED.nodes.registerType("x-send-event", XSendEvent);
 };

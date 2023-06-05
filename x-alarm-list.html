@@ -1,6 +1,6 @@
 <script type="text/javascript">
-    RED.nodes.registerType('xalarm-list', {
-        category: 'S4CXprotect',
+    RED.nodes.registerType('x-alarm-list', {
+        category: 'S4CMilestone',
         color: '#fde910',
         icon: 'icons/logocam.png',
         inputs: 1,
@@ -17,7 +17,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="xalarm-list">
+<script type="text/html" data-template-name="x-alarm-list">
     <div class="form-row">
         <label for="node-input-maxLines"><i class="fa fa-tag"></i> Max lines</label>
         <input type="text" id="node-input-maxLines" placeholder="Max lines">
@@ -32,7 +32,7 @@
     </div>
 </script>
 
-<script type="text/x-red" data-help-name="xalarm-list">
+<script type="text/x-red" data-help-name="x-alarm-list">
     <p>With this node you can send an event to the event server and trigger an Alarm with the possibility to activate a rule associated with it.</p>
     
     <h3>Inputs</h3>

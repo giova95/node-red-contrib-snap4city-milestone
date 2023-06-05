@@ -1,5 +1,5 @@
 {
-    "version": "",
+    "version": "0.0.1",
     "description": "Node-Red integration to communicate with Milestone XProtect VMS",
     "name": "node-red-contrib-snap4city-milestone",
     "node-red": {
