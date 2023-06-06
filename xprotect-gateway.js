@@ -1,10 +1,8 @@
 var fetch = require('node-fetch');
-var mqtt = require('mqtt');
-
 class Gateway {
 
   constructor(serverUrl) {
-    this.serverUrl = serverUrl;
+    this.serverUrl = 'http://'+serverUrl;
   }
 
   //API Get for EVENTS

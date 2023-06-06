@@ -18,8 +18,8 @@
         "XProtect",
         "Protocol Integration"
     ],
-    "author": "",
-    "license": "",
+    "author": "Angeli Giovanni",
+    "license": "AGPL-3.0-or-later",
     "bundleDependencies": [],
     "dependencies": {
         "jsontoxml": "^1.0.1",

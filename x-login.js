@@ -1,9 +1,24 @@
+/* NODE-RED-CONTRIB-SNAP4CITY-MILESTONE
+   Copyright (C) 2023 DISIT Lab http://www.disit.org - University of Florence
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as
+   published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Affero General Public License for more details.
+
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 module.exports = function (RED) {
 
     function XLogin(config) {
         RED.nodes.createNode(this, config);
         var node = this;
-        var { getTokenSOAP, getTokenREST } = require("./xprotect-token.js");
+        var { getTokenSOAP, getTokenREST } = require("./utility.js");
         var { xml2json } = require('xml-js');
         login(config);
 
@@ -68,6 +83,7 @@ module.exports = function (RED) {
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_tokenREST', tokenREST);
                     node.context().flow.set('access_tokenSOAP', tokenSOAP);
+                    node.context().flow.set('server_url', serverUrl.substring(8));
                 } else {
                     node.status({ fill: "red", shape: "ring", text: "Login Failed" });
                     let jsonerr = await responseREST.json();

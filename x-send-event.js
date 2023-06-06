@@ -1,13 +1,29 @@
+/* NODE-RED-CONTRIB-SNAP4CITY-MILESTONE
+   Copyright (C) 2023 DISIT Lab http://www.disit.org - University of Florence
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as
+   published by the Free Software Foundation, either version 3 of the
+   License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Affero General Public License for more details.
+
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 module.exports = function (RED) {
 
     function XSendEvent(config) {
         RED.nodes.createNode(this, config);
         var node = this;
         var access_token;
-        var { sendXML } = require('./xprotect-analytics.js');
+        var { sendXML } = require('./utility.js');
 
         node.on('input', async function (msg) {
             access_token = this.context().flow.get('access_tokenREST') || null;
+            var serverurl = this.context().flow.get('server_url') || null;
             if (access_token == null) {
                 node.warn("Login to XProtect first!");
                 return;
@@ -18,7 +34,7 @@ module.exports = function (RED) {
             let hostname = msg.payload.hasOwnProperty('hostname') ? msg.payload.hostname : config.hostname;
             let port = msg.payload.hasOwnProperty('port') ? msg.payload.port : config.port;
 
-            let response = await sendXML(access_token, guid, name, hostname, port);
+            let response = await sendXML(access_token, guid, name, hostname, port, serverurl);
             if (typeof response === 'string') {
                 resultMsg.payload = response;
             } else {
