@@ -20,33 +20,31 @@
         icon: 'icons/logocam.png',
         inputs: 1,
         outputs: 1,
-        label: function () {
-            return this.name || 'Send Event to XProtect';
-        },
+        label: this.name || 'Send Event to XProtect',
         defaults: {
-            name: { type: "text" },
-            guid: { type: "text" },
+            name: { type: 'text' },
+            guid: { type: 'text' },
             hostname: { type: 'text' },
-            port: { type: "text" },
+            port: { type: 'text' },
         }
     });
 </script>
 
 <script type="text/html" data-template-name="x-send-event">
     <div class="form-row">
-        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-guid"><i class="fa fa-tag"></i> Guid </label>
+        <label for="node-input-guid"><i class="fa fa-tag"></i>Guid </label>
         <input type="text" id="node-input-guid" placeholder="GUID">
     </div>
     <div class="form-row">
-        <label for="node-input-hostname"><i class="fa fa-tag"></i> Hostname</label>
+        <label for="node-input-hostname"><i class="fa fa-tag"></i>Hostname</label>
         <input type="text" id="node-input-hostname" placeholder="Hostname(default:localhost)">
     </div>
     <div class="form-row">
-        <label for="node-input-port"><i class="fa fa-tag"></i> Port</label>
+        <label for="node-input-port"><i class="fa fa-tag"></i>Port</label>
         <input type="text" id="node-input-port" placeholder="Port(default:9090)">
     </div>
 </script>
@@ -59,32 +57,49 @@
     <p>A JSON with these parameters:</p>
     
     <dl class="message-properties">
-       <dt>Name
-           <span class="property-type">string</span>
+       <dt>name
+           <span class="property-type">string(compulsory)</span>
        </dt>
        <dd>The name of the event which will be send and trigger. The event must exist in the VMS.</dd>
        
-       <dt>Guid
-           <span class="property-type">string</span>
+       <dt>guid
+           <span class="property-type">string(compulsory)</span>
        </dt>
        <dd>The Guid associated with a hardware device in the Milestone VMS(e.g. Camera, Microphone). Device must be registered.</dd>
        
-       <dt>Hostname
-            <span class="property-type">string</span>
+       <dt>hostname
+            <span class="property-type">string(compulsory)</span>
        </dt>
        <dd>The hostname where the Milestone VMS runs on. Only http or https are allowed(default localhost).</dd>
 
-       <dt>Port
-            <span class="property-type">string</span>
+       <dt>port
+            <span class="property-type">number(compulsory)</span>
        </dt>
        <dd>The port that allows send analytics events to the VMS, which must be activated(default 9090). Check the XProtect documentation for more details.</dd>
     </dl>
 
     <h3>Outputs</h3>
+    <p>A JSON object with this parameter:</p>
+
      <dl class="message-properties">
-         <dd>A JSON file containing the result of sending analytics events to VMS, with any errors.</dd>
+        <dt>messagge
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The result of the send operation to VMS, with any error</dd>
      </dl>
-     
+
+    <h3>Examples of JSON output of node's operation</h3>
+        <pre>
+            {
+                message: "OK Event sent correctly"
+            }
+        </pre>
+        <pre>
+            {
+                message: "Connection error: TypeError[ERR_INVALID_URL]:Invalid URL:http://wrongaddress:9090"
+            }
+        </pre>
+    
     <h3>Details</h3>
      <p>The node can receive the parameters described in the Inputs section, with them generates a XML file readable from the event server, and with server response 
         generates the output JSON. If the values are not present in the input JSON, these are read by those in the node properties. If they are not present 

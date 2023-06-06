@@ -4,6 +4,8 @@ const https = require('https');
 var { xml2json } = require('xml-js');
 var Gateway = require('./xprotect-gateway.js');
 
+//sostituire var e let con const se possibile
+
 //functions to use in node-red blocks
 module.exports = {
     //Return an array of alarms with info
@@ -25,7 +27,9 @@ module.exports = {
             } else {
                 list = [];
                 let alarm = new Map();
+                //prova jsonlist.flat()
                 let alarms = jsonList.elements[0].elements[0].elements[0].elements[0].elements;
+                //alternativa map reduce filter
                 for (let k = 0; k < alarms.length; k++) {
                     var line = lookup(alarms[k], 'elements')[1];
                     for (let i = 0; i < line.length; i++) {
@@ -55,7 +59,7 @@ module.exports = {
         const httpsAgent = new https.Agent({
             rejectUnauthorized: false,
         });
-
+        //try-catch e funzione per headers(request)
         await fetch(idpUrl, {
             method: 'POST',
             headers: {
@@ -76,7 +80,7 @@ module.exports = {
 
     //Get access token for the MIPS VMS SOAP service
     getTokenSOAP: async function (username, password, serverUrl) {
-        var token = null;
+        let token = null;
         var idpUrl = serverUrl + "/ManagementServer/ServerCommandService.svc";
         var payload = loginXML();
         let auth = Buffer.from(username + ":" + password).toString('base64')
@@ -115,6 +119,7 @@ module.exports = {
         if (res.status === 200) {
             events = await res.json();
         }
+        //funzionale map 
         for (let i = 0; i < events.array.length; i++) {
             if (events.array[i].displayName === name) {
                 checkName = true;
@@ -123,6 +128,7 @@ module.exports = {
         if (checkName) {
             var url = "http://" + hostname + ":" + port;
             var xml = eventXML(guid, name);
+            //try-catch
             await fetch(url, {
                 method: 'POST',
                 headers: {

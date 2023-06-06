@@ -28,7 +28,13 @@ module.exports = function (RED) {
                 node.warn("Login to XProtect first!");
                 return;
             }
-            const resultMsg = { payload: null };
+
+            const resultMsg = { 
+                payload:{
+                    message: null
+                } 
+            };
+
             let name = msg.payload.hasOwnProperty('name') ? msg.payload.name : config.name;
             let guid = msg.payload.hasOwnProperty('guid') ? msg.payload.guid : config.guid;
             let hostname = msg.payload.hasOwnProperty('hostname') ? msg.payload.hostname : config.hostname;
@@ -36,18 +42,15 @@ module.exports = function (RED) {
 
             let response = await sendXML(access_token, guid, name, hostname, port, serverurl);
             if (typeof response === 'string') {
-                resultMsg.payload = response;
+                resultMsg.payload.message = response;
             } else {
                 if (response.status === 200) {
-                    let result = response;
-                    resultMsg.payload = result.statusText + " Event sent correctly";
+                    resultMsg.payload.message = response.statusText + " Event sent correctly";
                 }
                 else if(response.status === 405){
-                    let result = response;
-                    resultMsg.payload = result.statusText + " Port cannot be empty";
+                    resultMsg.payload.message = response.statusText + " Port cannot be empty";
                 }else{
-                    let result = response;
-                    resultMsg.payload = result.statusText + ' GUID not valid';
+                    resultMsg.payload.message = response.statusText + ' GUID not valid';
                 }
             }
             node.send(resultMsg);

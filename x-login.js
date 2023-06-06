@@ -83,7 +83,7 @@ module.exports = function (RED) {
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_tokenREST', tokenREST);
                     node.context().flow.set('access_tokenSOAP', tokenSOAP);
-                    node.context().flow.set('server_url', serverUrl.substring(8));
+                    node.context().flow.set('server_url', serverUrl.replace("https","http"));
                 } else {
                     node.status({ fill: "red", shape: "ring", text: "Login Failed" });
                     let jsonerr = await responseREST.json();

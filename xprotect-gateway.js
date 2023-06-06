@@ -2,7 +2,7 @@ var fetch = require('node-fetch');
 class Gateway {
 
   constructor(serverUrl) {
-    this.serverUrl = 'http://'+serverUrl;
+    this.serverUrl = serverUrl;
   }
 
   //API Get for EVENTS
