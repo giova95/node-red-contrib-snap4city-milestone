@@ -18,8 +18,7 @@ module.exports = function (RED) {
             
             //Get alarm lines
             let res = await getAlarmList(access_token, maxLines, order, target);
-            node.warn(res);
-
+            
             //Update JSON output
             resultMsg.payload = res;
             node.send(resultMsg);

@@ -3,9 +3,6 @@ var { v4: uuidv4 } = require('uuid');
 const https = require('https');
 var { xml2json } = require('xml-js');
 
-
-
-//TODO:gestire response come negli altri blocchi, error propagati come stringhe e poi error e send resultMsg come JSON
 async function getAlarmList(tokenSOAP, maxLines, order, target) {
     var list;
     var { sessionId, error } = await startAlarmSession(tokenSOAP);
@@ -22,22 +19,19 @@ async function getAlarmList(tokenSOAP, maxLines, order, target) {
                 "description": err
             };
         } else {
-            list = {
-                "label": null,
-                "data": null
-            }
-            //trovare modo di inserire tutto il JSON in list
-            //fare for ciclando su questo lookup
-            var element = lookup(jsonList.elements[0].elements[0].elements[0].elements[0].elements[0], 'elements')[1];
-            for(let i = 0; i<element.length; i++) {
-                list.label[i] = (lookup(element[i], 'name')[1]);
-                if(element[i].hasOwnProperty('elements')){
-                    list.data = lookup(element[i], 'elements')[1];
+            list = [];
+            let alarm = new Map();
+            let alarms = jsonList.elements[0].elements[0].elements[0].elements[0].elements;
+            for(let k = 0; k < alarms.length; k++) {
+                var line = lookup(alarms[k], 'elements')[1];
+                for(let i = 0; i<line.length; i++) {
+                    if(line[i].hasOwnProperty('elements')){
+                    alarm.set((lookup(line[i], 'name')[1].substring(2)), lookup(line[i], 'elements')[1][0].text);
+                    }
                 }
+                list.push(Object.fromEntries(alarm));
             }
-            console.log(list);
         }
-
     } else {
         list = error;
     }
@@ -55,7 +49,7 @@ async function startAlarmSession(tokenSOAP) {
         id = jsonSession.elements[0].elements[0].elements[0].elements[0].elements[0].text;
     } else {
         const err = jsonSession.elements[0].elements[0].elements[0].elements[1].elements[0].text;
-        error = resSession.status + ' ' + resSession.statusText;
+        error = resSession.status + ' ' + resSession.statusText+ ' ' + err;
     }
     return { id, error };
 }
