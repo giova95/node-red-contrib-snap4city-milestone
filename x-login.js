@@ -25,7 +25,7 @@ module.exports = function (RED) {
             //Clear the timeout for access tokens refresh
             if(refreshREST){
                 clearTimeout(refreshREST);
-                refresh = null;
+                refreshREST = null;
             }
             if(refreshSOAP){
                 clearTimeout(refreshSOAP);
@@ -62,8 +62,8 @@ module.exports = function (RED) {
                     resultMsg.payload.expireSOAP = expireSOAP
 
                     //Set a Timer based on access tokens expire time
-                    var refreshREST = setTimeout(() => login(config, refresh), (expireREST/2)*1000); 
-                    var refreshSOAP = setTimeout(() => login(config, refresh), (expireSOAP/2)*1000);
+                    var refreshREST = setTimeout(() => login(config, refreshREST), (expireREST/2)*1000); 
+                    var refreshSOAP = setTimeout(() => login(config, refreshSOAP), (expireSOAP/2)*1000);
 
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_tokenREST', tokenREST);
