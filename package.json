@@ -6,8 +6,7 @@
         "nodes": {
             "x-login": "x-login.js",
             "x-send-event": "x-send-event.js",
-            "x-alarm-list": "x-alarm-list.js",
-            "x-receive-events": "x-receive-events.js"
+            "x-alarm-list": "x-alarm-list.js"
         }
     },
     "keywords": [
