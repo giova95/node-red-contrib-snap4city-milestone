@@ -1,17 +1,15 @@
-var fetch = require('node-fetch');
-var { v4: uuidv4 } = require('uuid');
+const fetch = require('node-fetch');
+const { v4: uuidv4 } = require('uuid');
 const https = require('https');
-var { xml2json } = require('xml-js');
-var Gateway = require('./xprotect-gateway.js');
-
-//sostituire var e let con const se possibile
+const { xml2json } = require('xml-js');
+const Gateway = require('./xprotect-gateway.js');
 
 //functions to use in node-red blocks
 module.exports = {
-    //Return an array of alarms with info
+    //Return JSON of array where each array contains an alarm line
     getAlarmList: async function (tokenSOAP, maxLines, order, target) {
-        var list;
-        var { sessionId, error } = await startAlarmSession(tokenSOAP);
+        let list;
+        const { sessionId, error } = await startAlarmSession(tokenSOAP);
         if (typeof sessionId !== undefined) {
             const resSession = await getAlarmLines(tokenSOAP, sessionId, maxLines, order, target);
             const xmlList = await resSession.text();
@@ -19,19 +17,17 @@ module.exports = {
 
             if (resSession.status !== 200) {
                 const err = jsonList.elements[0].elements[0].elements[0].elements[1].elements[0].text;
-                let error = resSession.status + ' ' + resSession.statusText;
+                const error = resSession.status + ' ' + resSession.statusText;
                 list = {
                     "error": error,
                     "description": err
                 };
             } else {
                 list = [];
-                let alarm = new Map();
-                //prova jsonlist.flat()
-                let alarms = jsonList.elements[0].elements[0].elements[0].elements[0].elements;
-                //alternativa map reduce filter
+                const alarm = new Map();
+                const alarms = jsonList.elements[0].elements[0].elements[0].elements[0].elements;
                 for (let k = 0; k < alarms.length; k++) {
-                    var line = lookup(alarms[k], 'elements')[1];
+                    const line = lookup(alarms[k], 'elements')[1];
                     for (let i = 0; i < line.length; i++) {
                         if (line[i].hasOwnProperty('elements')) {
                             alarm.set((lookup(line[i], 'name')[1].substring(2)), lookup(line[i], 'elements')[1][0].text);
@@ -48,10 +44,10 @@ module.exports = {
 
     //Get access token for the MIP VMS RESTful API gateway.
     getTokenREST: async function (username, password, serverUrl) {
-        var token = null;
-        var idpUrl = serverUrl + "/API/IDP/connect/token";
+        let token = null;
+        const idpUrl = serverUrl + "/API/IDP/connect/token";
 
-        var urlencoded = new URLSearchParams();
+        const urlencoded = new URLSearchParams();
         urlencoded.append("grant_type", "password");
         urlencoded.append("username", username);
         urlencoded.append("password", password);
@@ -59,7 +55,6 @@ module.exports = {
         const httpsAgent = new https.Agent({
             rejectUnauthorized: false,
         });
-        //try-catch e funzione per headers(request)
         await fetch(idpUrl, {
             method: 'POST',
             headers: {
@@ -68,10 +63,10 @@ module.exports = {
             body: urlencoded,
             agent: httpsAgent
         }).then(async function (response) {
-            let res = await response;
+            const res = await response;
             token = res;
         }).catch(function (error) {
-            var msg = "Failed to retrieve token - " + error;
+            const msg = "Failed to retrieve token - " + error;
             token = msg;
         });
 
@@ -81,9 +76,9 @@ module.exports = {
     //Get access token for the MIPS VMS SOAP service
     getTokenSOAP: async function (username, password, serverUrl) {
         let token = null;
-        var idpUrl = serverUrl + "/ManagementServer/ServerCommandService.svc";
-        var payload = loginXML();
-        let auth = Buffer.from(username + ":" + password).toString('base64')
+        const idpUrl = serverUrl + "/ManagementServer/ServerCommandService.svc";
+        const payload = loginXML();
+        const auth = Buffer.from(username + ":" + password).toString('base64')
         const httpsAgent = new https.Agent({
             rejectUnauthorized: false,
         });
@@ -98,10 +93,10 @@ module.exports = {
             body: payload,
             agent: httpsAgent
         }).then(async function (response) {
-            let res = await response;
+            const res = await response;
             token = res;
         }).catch(function (error) {
-            var msg = "Failed to retrieve token: " + error;
+            const msg = "Failed to retrieve token: " + error;
             token = msg;
         });
         return token;
@@ -109,26 +104,24 @@ module.exports = {
 
     //send and trigger an Analytic Event through an XML file
     sendXML: async function (access_token, guid, name, hostname, port, serverUrl) {
-        var checkName = false;
-        var events;
-        var xmlres = null;
-        var api_gateway = new Gateway(serverUrl);
+        let checkName = false;
+        let events;
+        let xmlres = null;
+        const api_gateway = new Gateway(serverUrl);
 
         //check if exist an Analytic event with this name
-        let res = await api_gateway.getAllEvents(access_token);
+        const res = await api_gateway.getAllEvents(access_token);
         if (res.status === 200) {
             events = await res.json();
         }
-        //funzionale map 
         for (let i = 0; i < events.array.length; i++) {
             if (events.array[i].displayName === name) {
                 checkName = true;
             }
         }
         if (checkName) {
-            var url = "http://" + hostname + ":" + port;
-            var xml = eventXML(guid, name);
-            //try-catch
+            const url = "http://" + hostname + ":" + port;
+            const xml = eventXML(guid, name);
             await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -136,10 +129,10 @@ module.exports = {
                 },
                 body: xml
             }).then(async function (response) {
-                let res = await response;
+                const res = await response;
                 xmlres = res;
             }).catch(function (err) {
-                var msg = "Connection error: " + err
+                const msg = "Connection error: " + err
                 xmlres = msg;
             });
         } else {
@@ -167,9 +160,9 @@ async function startAlarmSession(tokenSOAP) {
 }
 
 async function getAlarmLines(tokenSOAP, sessionId, maxLines, order, target) {
-    let url = 'http://localhost:22331/Central/AlarmServiceToken';
-    let payload = getXML(tokenSOAP, sessionId, maxLines, order, target);
-    var lines;
+    const url = 'http://localhost:22331/Central/AlarmServiceToken';
+    const payload = getXML(tokenSOAP, sessionId, maxLines, order, target);
+    let lines;
 
     await fetch(url, {
         method: 'POST',
@@ -179,19 +172,19 @@ async function getAlarmLines(tokenSOAP, sessionId, maxLines, order, target) {
         },
         body: payload
     }).then(async function (response) {
-        let res = await response;
+        const res = await response;
         lines = res;
     }).catch(function (error) {
-        var msg = "Failed to Start Alarm Session: " + error;
+        const msg = "Failed to Start Alarm Session: " + error;
         lines = msg;
     });
     return lines;
 }
 
 async function getSessionId(tokenSOAP) {
-    var sessionId;
-    let url = 'http://localhost:22331/Central/AlarmServiceToken';
-    let payload = startXML(tokenSOAP);
+    let sessionId;
+    const url = 'http://localhost:22331/Central/AlarmServiceToken';
+    const payload = startXML(tokenSOAP);
 
     await fetch(url, {
         method: 'POST',
@@ -201,10 +194,10 @@ async function getSessionId(tokenSOAP) {
         },
         body: payload
     }).then(async function (response) {
-        let res = await response;
+        const res = await response;
         sessionId = res;
     }).catch(function (error) {
-        var msg = "Failed to Start Alarm Session: " + error;
+        const msg = "Failed to Start Alarm Session: " + error;
         sessionId = msg;
     });
     return sessionId;
@@ -212,7 +205,7 @@ async function getSessionId(tokenSOAP) {
 
 function startXML(tokenSOAP) {
 
-    var xml = '' +
+    const xml = '' +
         '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
         ' <s:Body>' +
         '   <StartAlarmLineSession  xmlns="http://videoos.net/2/CentralServerAlarmCommand">' +
@@ -225,7 +218,7 @@ function startXML(tokenSOAP) {
 }
 
 function getXML(tokenSOAP, sessionId, maxLines, order, target) {
-    var xml = '' +
+    const xml = '' +
         '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
         ' <s:Body>' +
         '   <GetAlarmLines xmlns="http://videoos.net/2/CentralServerAlarmCommand">' +
@@ -249,9 +242,9 @@ function getXML(tokenSOAP, sessionId, maxLines, order, target) {
     return xml;
 }
 function eventXML(guid, name) {
-    let timestamp = new Date().toISOString();
+    const timestamp = new Date().toISOString();
 
-    var xml = '' +
+    const xml = '' +
         '<?xml version="1.0" encoding="utf-8"?>' +
         '<AnalyticsEvent xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:milestone-systems">' +
         '   <EventHeader>' +
@@ -286,8 +279,8 @@ function eventXML(guid, name) {
 }
 
 function loginXML() {
-    let istanceID = uuidv4();
-    var xml = '' +
+    const istanceID = uuidv4();
+    const xml = '' +
         '<?xml version="1.0" encoding="utf-8"?>' +
         '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xpr="http://videoos.net/2/XProtectCSServerCommand">' +
         '<soapenv:Header/>' +
@@ -301,20 +294,20 @@ function loginXML() {
 }
 
 function lookup(obj, k) {
-    for (var key in obj) {
-        var value = obj[key];
+    for (let key in obj) {
+        let value = obj[key];
 
         if (k == key) {
             return [k, value];
         }
 
         if (typeof (value) === "object" && !Array.isArray(value)) {
-            var y = lookup(value, k);
+            let y = lookup(value, k);
             if (y && y[0] == k) return y;
         }
         if (Array.isArray(value)) {
-            for (var i = 0; i < value.length; ++i) {
-                var x = lookup(value[i], k);
+            for (let i = 0; i < value.length; ++i) {
+                let x = lookup(value[i], k);
                 if (x && x[0] == k) return x;
             }
         }

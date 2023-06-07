@@ -17,13 +17,13 @@ module.exports = function (RED) {
 
     function XSendEvent(config) {
         RED.nodes.createNode(this, config);
-        var node = this;
-        var access_token;
-        var { sendXML } = require('./utility.js');
+        const node = this;
+        let access_token;
+        const { sendXML } = require('./utility.js');
 
         node.on('input', async function (msg) {
             access_token = this.context().flow.get('access_tokenREST') || null;
-            var serverurl = this.context().flow.get('server_url') || null;
+            const serverurl = this.context().flow.get('server_url') || null;
             if (access_token == null) {
                 node.warn("Login to XProtect first!");
                 return;
@@ -35,12 +35,12 @@ module.exports = function (RED) {
                 } 
             };
 
-            let name = msg.payload.hasOwnProperty('name') ? msg.payload.name : config.name;
-            let guid = msg.payload.hasOwnProperty('guid') ? msg.payload.guid : config.guid;
-            let hostname = msg.payload.hasOwnProperty('hostname') ? msg.payload.hostname : config.hostname;
-            let port = msg.payload.hasOwnProperty('port') ? msg.payload.port : config.port;
+            const name = msg.payload.hasOwnProperty('name') ? msg.payload.name : config.name;
+            const guid = msg.payload.hasOwnProperty('guid') ? msg.payload.guid : config.guid;
+            const hostname = msg.payload.hasOwnProperty('hostname') ? msg.payload.hostname : config.hostname;
+            const port = msg.payload.hasOwnProperty('port') ? msg.payload.port : config.port;
 
-            let response = await sendXML(access_token, guid, name, hostname, port, serverurl);
+            const response = await sendXML(access_token, guid, name, hostname, port, serverurl);
             if (typeof response === 'string') {
                 resultMsg.payload.message = response;
             } else {

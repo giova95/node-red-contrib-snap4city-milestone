@@ -1,4 +1,4 @@
-var fetch = require('node-fetch');
+const fetch = require('node-fetch');
 class Gateway {
 
   constructor(serverUrl) {
@@ -8,18 +8,17 @@ class Gateway {
   //API Get for EVENTS
   async getAllEvents(token) {
     const url = this.serverUrl + '/API/rest/v1/analyticsEvents';
-    var events = null;
+    let events = null;
     await fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
       }
     }).then(async function (response) {
-      let res = await response;
+      const res = await response;
       events = res;
     }).catch(function (error) {
-      let msg = 'Failed to retrieve event - ' + error;
-      console.log(msg);
+      const msg = 'Failed to retrieve event - ' + error;
       events = msg;
     });
     return events;
@@ -28,18 +27,17 @@ class Gateway {
   //API Get for CAMERAS
   async getAllCameras(token) {
     const url = this.serverUrl + '/API/rest/v1/cameras';
-    var cam = null;
+    let cam = null;
     await fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
       }
     }).then(async function (response) {
-      let res = await response;
+      const res = await response;
       cam = res;
     }).catch(function (error) {
-      let msg = 'Failed to retrieve rules - ' + error;
-      console.log(msg);
+      const msg = 'Failed to retrieve rules - ' + error;
       cam = msg;
     });
     return cam;
@@ -47,17 +45,17 @@ class Gateway {
 
   async getCameraGroups(token) {
     const url = this.serverUrl + '/API/rest/v1/cameraGroups'
-    var group = null;
+    let group = null;
     await fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
       }
     }).then(async function (response) {
-      let res = await response;
+      const res = await response;
       group = res;
     }).catch(function (error) {
-      let msg = 'Failed to retrieve groups - ' + error
+      const msg = 'Failed to retrieve groups - ' + error
       group = msg;
     });
     return group;
@@ -66,18 +64,17 @@ class Gateway {
   //API Get for RULES
   async getAllRules(token) {
     const url = this.serverUrl + '/API/rest/v1/rules'
-    var rules = null;
+    let rules = null;
     await fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
       }
     }).then(async function (response) {
-      let res = await response;
+      const res = await response;
       rules = res;
     }).catch(function (error) {
-      let msg = 'Failed to retrieve rules - ' + error;
-      console.log(msg);
+      const msg = 'Failed to retrieve rules - ' + error;
       rules = msg;
     });
     return rules

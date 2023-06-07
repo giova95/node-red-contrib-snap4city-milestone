@@ -17,17 +17,17 @@ module.exports = function (RED) {
 
     function XLogin(config) {
         RED.nodes.createNode(this, config);
-        var node = this;
-        var { getTokenSOAP, getTokenREST } = require("./utility.js");
-        var { xml2json } = require('xml-js');
+        const node = this;
+        const { getTokenSOAP, getTokenREST } = require("./utility.js");
+        const { xml2json } = require('xml-js');
         login(config);
 
         async function login() {
-            var serverUrl = config.address; // Hostname of the management server
-            var username = config.user; // XProtect basic user with the XProtect Administrators role
-            var password = config.password; // Password for basic user
+            const serverUrl = config.address; 
+            const username = config.user; 
+            const password = config.password;
 
-            var resultMsg = {
+            let resultMsg = {
                 payload: {
                     tokenREST: null,
                     tokenSOAP: null,
@@ -47,25 +47,21 @@ module.exports = function (RED) {
                 refreshSOAP = null;
             }
 
-            //send request for both SOAP and REST to get access tokens
             const responseSOAP = await getTokenSOAP(username, password, serverUrl);
             const responseREST = await getTokenREST(username, password, serverUrl);
 
             if (typeof responseREST === "string" && typeof responseSOAP === "string") {
                 node.status({ fill: "yellow", shape: "ring", text: "Try to login" });
-                let err = "Server Address Not Found, Please verify if it exists";
-                //update results JSON
+                const err = "Server Address Not Found, Please verify if it exists";
                 resultMsg.payload.error = err;
             } else {
                 if (responseREST.status === 200 && responseSOAP.status === 200) {
-                    // manage REST response
-                    let jsonREST = await responseREST.json();
+                    const jsonREST = await responseREST.json();
                     const tokenREST = jsonREST["access_token"];
                     const expireREST = jsonREST["expires_in"];
 
-                    //manage SOAP response
-                    let resSOAP = await responseSOAP.text();
-                    let jsonSOAP = JSON.parse(xml2json(resSOAP));
+                    const resSOAP = await responseSOAP.text();
+                    const jsonSOAP = JSON.parse(xml2json(resSOAP));
                     const Element = jsonSOAP.elements[0].elements[0].elements[0].elements[0];
                     const tokenSOAP = Element.elements[3].elements[0].text;
                     const expireSOAP = (Element.elements[1].elements[0].elements[0].text)/1000000;
@@ -77,8 +73,8 @@ module.exports = function (RED) {
                     resultMsg.payload.expireSOAP = expireSOAP
 
                     //Set a Timer based on access tokens expire time
-                    var refreshREST = setTimeout(() => login(config, refreshREST), (expireREST/2)*1000); 
-                    var refreshSOAP = setTimeout(() => login(config, refreshSOAP), (expireSOAP/2)*1000);
+                    let refreshREST = setTimeout(() => login(config, refreshREST), (expireREST/2)*1000); 
+                    let refreshSOAP = setTimeout(() => login(config, refreshSOAP), (expireSOAP/2)*1000);
 
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_tokenREST', tokenREST);
@@ -86,9 +82,8 @@ module.exports = function (RED) {
                     node.context().flow.set('server_url', serverUrl.replace("https","http"));
                 } else {
                     node.status({ fill: "red", shape: "ring", text: "Login Failed" });
-                    let jsonerr = await responseREST.json();
-                    let err = jsonerr['error_description'];
-                    //update results JSON
+                    const jsonerr = await responseREST.json();
+                    const err = jsonerr['error_description'];
                     resultMsg.payload.error = err;
                 }
             }
