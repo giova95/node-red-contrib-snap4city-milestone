@@ -20,14 +20,14 @@ module.exports = function (RED) {
         const node = this;
         const { getTokenSOAP, getTokenREST } = require("./utility.js");
         const { xml2json } = require('xml-js');
+        let refreshREST = null;
+        let refreshSOAP = null;
         login(config);
 
         async function login() {
             const serverUrl = config.address; 
             const username = config.user; 
             const password = config.password;
-            let refreshREST;
-            let refreshSOAP;
 
             let resultMsg = {
                 payload: {
