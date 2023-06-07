@@ -55,7 +55,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="x-alarm-list">
-    <p>With this node you can send an event to the event server and trigger an Alarm with the possibility to activate a rule associated with it.</p>
+    <p>With this node you can retrieve the list of alarms/events from the event server</p>
     
     <h3>Inputs</h3>
     <p>A JSON with these parameters:</p>
@@ -80,26 +80,115 @@
     <h3>Outputs</h3>
     <p>A JSON object with an array which contains an alarm for each item, if the node works, with these informations:</p>
 
-     <dl class="message-properties">
+    <dl class="message-properties">
         <dt>CameraId
             <span class="property-type">string</span>
         </dt>
         <dd>The Id of the camera corresponding to the alarm/event</dd>
-     </dl>
-     <dl class="message-properties">
+
+        <dt>Category
+            <span class="property-type">number</span>
+        </dt>
+        <dd>The category of the alarm/event</dd>
+
+        <dt>CustomTag
+            <span class="property-type">string</span>
+        </dt>
+        <dd>A tag associated with the alarm/event when it is triggered</dd>
+
         <dt>Description
             <span class="property-type">string</span>
         </dt>
         <dd>A short description of the alarm/event</dd>
-     </dl>
-     <dl class="message-properties">
+
+        <dt>FilterMatch
+            <span class="property-type">boolean</span>
+        </dt>
+        <dd>True or false, depending on the configuration of the filter</dd>
+
         <dt>Id
             <span class="property-type">string</span>
         </dt>
-        <dd>The Id associated with the alarm/event</dd>
-     </dl>
+        <dd>The Id associated with the alarm/event in the VMS</dd>
+        
+        <dt>LocalId
+            <span class="property-type">number</span>
+        </dt>
+        <dd>The relative Id associated with the alarm/event in the list</dd>
+
+        <dt>Location
+            <span class="property-type">string</span>
+        </dt>
+        <dd>Where the alarm/event is located in the VMS</dd>
+
+        <dt>Message
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The message contained in the alarm/event when it triggered</dd>
+
+        <dt>Modified
+            <span class="property-type">datetime</span>
+        </dt>
+        <dd>Timestamp when the alarm/event was modified last time</dd>
+
+        <dt>Name
+            <span class="property-type">string</span>
+        </dt>
+        <dd>Name of the alarm/event in the VMS</dd>
+
+        <dt>Priority
+            <span class="property-type">number</span>
+        </dt>
+        <dd>The priority level of the alarm/event in the VMS</dd>
+
+        <dt>Priority Name
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The priority associated at the priority number above</dd>
+
+        <dt>RuleType
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The type of the rule associated with the alarm/event in the VMS</dd>
+
+        <dt>SourceId
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The Id of the camera associated with the alarm/event in the VMS</dd>
+
+        <dt>SourceName
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The name of the camera associated with the alarm/event in the VMS</dd>
+
+        <dt>State
+            <span class="property-type">number</span>
+        </dt>
+        <dd>The state of the alarm/event in the VMS when it triggered</dd>
+        
+        <dt>StateName
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The name associated at the state number above</dd>
+        
+        <dt>Timestamp
+            <span class="property-type">datetime</span>
+        </dt>
+        <dd>Timestamp when the alarm/event was triggered</dd>
+
+        <dt>Type
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The type of alarm/event in the VMS</dd>
+
+        <dt>VendorName
+            <span class="property-type">string</span>
+        </dt>
+        <dd>The vendor of the alarm/event in the VMS</dd>
     
-    <p>A JSON object with this parameter, if the node doesn't work:</p> 
+    </dl>
+
+    <p>A JSON object with these parameters, if the node doesn't work:</p> 
     <dl class="message-properties">
         <dt>error
             <span class="property-type">string</span>
@@ -110,15 +199,48 @@
             <span class="property-type">string</span>
         </dt>
         <dd>A more accurate description to help resolve the issue</dd>
-     </dl>
+    </dl>
     
-    <h3>Example of JSON output if the operation goes wrong</h3>
-        <pre>
-            {
-                error: "500 Internal Server Error",
-                description: "InnerException The value 'wrong' cannot be parsed as the type 'Int32'"
-            };
-        </pre>
+
+    <h3>Example of JSON output if the operation works:</h3>
+    <dl class="exampleJson">
+       <dd>
+       {<br>
+          Camerald: "ef06380b-88b8-4545-a93f-0e76b95b7434",<br>
+          Category: "0",<br>
+          CustomTag: "TagFromXML",<br>
+          Description: "test send event block-IJJ Analytics event description,<br>
+          FilterMatch: "true",<br>
+          Id: "ae5efc61-bb48-45dc-abd9-cbeba3a17660",<br> 
+          LocalId: "197",<br> 
+          Location: " Event location 1,<br> 
+          Message: "MyAnalyticsEvent01",<br> 
+          Modified: "2023-06-06716:58:00.59Z",<br> 
+          Name: "MyAnalyticsAlarm01",<br> 
+          Priority: "1",<br> 
+          PriorityName: "High",<br> 
+          RuleType: "4547f085-8b68-4639-826f-8722afbOffc5",<br> 
+          Sourceld: "ef06380b-88b8-4545-a93f-0e76b95b7434",<br> 
+          SourceName: "AXIS Q1951-E Thermal Camera (192.168.1.000) - Telecamera 1",<br> 
+          State: "1",<br> 
+          StateName: "New",<br> 
+          Timestamp: "2023-06- 06716:58:00.557Z",<br> 
+          Type: "MyType",<br> 
+          VendorName: "My Smart Video"<br>
+        }
+       </dd>
+    </dl>
+
+
+    <h3>Example of JSON output if the operation goes wrong:</h3>
+    <dl class="exampleJson">
+       <dd>
+       {<br>
+          error: "500 Internal Server Error",<br>
+          description: "The formatter threw an exception while trying to deserialize the message: There was an error while trying to deserialize parameter http://videoos.net/2/CentralServerAlarmCommand:maxCount. The InnerException message was 'There was an error deserializing the object of type System.Int32. The value " cannot be parsed as the type 'Int32'.'. Please see InnerException for more details." <br>
+       }
+       </dd>
+    </dl>
 
     <h3>Details</h3>
      <p>The node can receive the parameters described in the Inputs section, with them generates a XML file with which a SOAP request is sent to the event server. 

@@ -79,7 +79,7 @@
     </dl>
 
     <h3>Outputs</h3>
-    <p>A JSON object with this parameter:</p>
+    <p>A JSON object with these parameters:</p>
 
      <dl class="message-properties">
         <dt>messagge
@@ -88,18 +88,24 @@
         <dd>The result of the send operation to VMS, with any error</dd>
      </dl>
 
-    <h3>Examples of JSON output of node's operation</h3>
-        <pre>
-            {
-                message: "OK Event sent correctly"
-            }
-        </pre>
-        <pre>
-            {
-                message: "Connection error: TypeError[ERR_INVALID_URL]:Invalid URL:http://wrongaddress:9090"
-            }
-        </pre>
-    
+    <h3>Example of JSON output if the opreation is correct:</h3>
+    <dl class="exampleJson">
+        <dd>
+            {<br>
+                message: "OK Event sent correctly"<br>
+            }<br>
+        </dd>
+    </dl>
+
+    <h3>Example of JSON output if operation goes wrong:</h3>
+    <dl class="exampleJson">
+        <dd>
+            {<br>
+                message: "Connection error: TypeError[ERR_INVALID_URL]:Invalid URL:http://wrongaddress:9090"<br>
+            }<br>
+        </dd>
+    </dl>
+
     <h3>Details</h3>
      <p>The node can receive the parameters described in the Inputs section, with them generates a XML file readable from the event server, and with server response 
         generates the output JSON. If the values are not present in the input JSON, these are read by those in the node properties. If they are not present 
