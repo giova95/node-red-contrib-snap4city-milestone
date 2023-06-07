@@ -1,5 +1,5 @@
 # node-red-contrib-snap4city-milestone
-##Node-red integration to communicate with Milestone XProtect VMS. These nodes these nodes allow to have a two-way communication.
+###Node-red integration to communicate with Milestone XProtect VMS. These nodes these nodes allow to have a two-way communication.
 
 A description of the available nodes can be found here.
 
