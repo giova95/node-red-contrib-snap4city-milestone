@@ -26,6 +26,8 @@ module.exports = function (RED) {
             const serverUrl = config.address; 
             const username = config.user; 
             const password = config.password;
+            let refreshREST;
+            let refreshSOAP;
 
             let resultMsg = {
                 payload: {
@@ -73,8 +75,8 @@ module.exports = function (RED) {
                     resultMsg.payload.expireSOAP = expireSOAP
 
                     //Set a Timer based on access tokens expire time
-                    let refreshREST = setTimeout(() => login(config, refreshREST), (expireREST/2)*1000); 
-                    let refreshSOAP = setTimeout(() => login(config, refreshSOAP), (expireSOAP/2)*1000);
+                    refreshREST = setTimeout(() => login(config, refreshREST), (expireREST/2)*1000); 
+                    refreshSOAP = setTimeout(() => login(config, refreshSOAP), (expireSOAP/2)*1000);
 
                     node.status({ fill: "green", shape: "dot", text: username + " Logged In" });
                     node.context().flow.set('access_tokenREST', tokenREST);

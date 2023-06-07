@@ -22,9 +22,9 @@
     ],
     "author": "Angeli Giovanni",
     "license": "AGPL-3.0-or-later",
-    "bundleDependencies": [],
     "dependencies": {
         "jsontoxml": "^1.0.1",
+        "node-fetch": "^2.6.11",
         "uuid": "^9.0.0",
         "xml-js": "^1.6.11",
         "xml2js": "^0.6.0"
