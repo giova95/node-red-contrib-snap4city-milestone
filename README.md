@@ -1,6 +1,5 @@
 # node-red-contrib-snap4city-milestone
-###Node-red integration to communicate with Milestone XProtect VMS. These nodes these nodes allow to have a two-way communication.
-
+Node-red integration to communicate with Milestone XProtect VMS. These nodes these nodes allow to have a two-way communication.
 A description of the available nodes can be found here.
 
 Snap4City https://www.snap4city.org provides a large library of nodes for smart cities to create flow exploiting:
