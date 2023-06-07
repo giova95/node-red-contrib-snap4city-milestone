@@ -78,7 +78,7 @@
     </dl>
 
     <h3>Outputs</h3>
-    <p>A JSON object with an array which contains an alarm for each item, if the node works, with these informations:</p>
+    <p>A JSON array which contains an alarm for each item, if the node works, with these informations:</p>
 
     <dl class="message-properties">
         <dt>CameraId
@@ -205,29 +205,31 @@
     <h3>Example of JSON output if the operation works:</h3>
     <dl class="exampleJson">
        <dd>
-       {<br>
-          Camerald: "ef06380b-88b8-4545-a93f-0e76b95b7434",<br>
-          Category: "0",<br>
-          CustomTag: "TagFromXML",<br>
-          Description: "test send event block-IJJ Analytics event description,<br>
-          FilterMatch: "true",<br>
-          Id: "ae5efc61-bb48-45dc-abd9-cbeba3a17660",<br> 
-          LocalId: "197",<br> 
-          Location: " Event location 1,<br> 
-          Message: "MyAnalyticsEvent01",<br> 
-          Modified: "2023-06-06716:58:00.59Z",<br> 
-          Name: "MyAnalyticsAlarm01",<br> 
-          Priority: "1",<br> 
-          PriorityName: "High",<br> 
-          RuleType: "4547f085-8b68-4639-826f-8722afbOffc5",<br> 
-          Sourceld: "ef06380b-88b8-4545-a93f-0e76b95b7434",<br> 
-          SourceName: "AXIS Q1951-E Thermal Camera (192.168.1.000) - Telecamera 1",<br> 
-          State: "1",<br> 
-          StateName: "New",<br> 
-          Timestamp: "2023-06- 06716:58:00.557Z",<br> 
-          Type: "MyType",<br> 
-          VendorName: "My Smart Video"<br>
-        }
+       <pre>
+{
+    Camerald: "ef06380b-88b8-4545-a93f-0e76b95b7434",
+    Category: "0",
+    CustomTag: "TagFromXML",
+    Description: "test send event block-IJJ Analytics event description,
+    FilterMatch: "true",
+    Id: "ae5efc61-bb48-45dc-abd9-cbeba3a17660", 
+    LocalId: "197", 
+    Location: " Event location 1, 
+    Message: "MyAnalyticsEvent01", 
+    Modified: "2023-06-06716:58:00.59Z", 
+    Name: "MyAnalyticsAlarm01", 
+    Priority: "1", 
+    PriorityName: "High", 
+    RuleType: "4547f085-8b68-4639-826f-8722afbOffc5", 
+    Sourceld: "ef06380b-88b8-4545-a93f-0e76b95b7434", 
+    SourceName: "AXIS Q1951-E Thermal Camera (192.168.1.000) - Telecamera 1", 
+    State: "1", 
+    StateName: "New", 
+    Timestamp: "2023-06- 06716:58:00.557Z", 
+    Type: "MyType", 
+    VendorName: "My Smart Video"
+}
+       </pre> 
        </dd>
     </dl>
 
@@ -235,10 +237,12 @@
     <h3>Example of JSON output if the operation goes wrong:</h3>
     <dl class="exampleJson">
        <dd>
-       {<br>
-          error: "500 Internal Server Error",<br>
-          description: "The formatter threw an exception while trying to deserialize the message: There was an error while trying to deserialize parameter http://videoos.net/2/CentralServerAlarmCommand:maxCount. The InnerException message was 'There was an error deserializing the object of type System.Int32. The value " cannot be parsed as the type 'Int32'.'. Please see InnerException for more details." <br>
-       }
+       <pre>
+{
+    error: "500 Internal Server Error",
+    description: "The formatter threw an exception while trying to deserialize the message: There was an error while trying to deserialize parameter http://videoos.net/2/CentralServerAlarmCommand:maxCount. The InnerException message was 'There was an error deserializing the object of type System.Int32. The value " cannot be parsed as the type 'Int32'.'. Please see InnerException for more details." 
+}
+       </pre>
        </dd>
     </dl>
 

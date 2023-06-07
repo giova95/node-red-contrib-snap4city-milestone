@@ -2,7 +2,9 @@
     "version": "0.0.1",
     "description": "Node-Red integration to communicate with Milestone XProtect VMS",
     "name": "node-red-contrib-snap4city-milestone",
+    "homepage": "https://github.com/disit/node-red-contrib-snap4city-milestone",
     "node-red": {
+        "version": ">=2.2.2",
         "nodes": {
             "x-login": "x-login.js",
             "x-send-event": "x-send-event.js",

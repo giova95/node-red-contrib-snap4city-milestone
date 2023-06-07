@@ -118,27 +118,31 @@
    <h3>Example of JSON output if login works:</h3>
    <dl class="exampleJson">
       <dd>
-      {<br>
-         tokenREST: "eyJhbOciODSUzI1NiIsImtpZCI6Ij",<br>
-         tokenSOAP: "TOKEN#85c18f10-e479-44c0- 9af7", <br>
-         expireREST: 3600, <br>
-         expireSOAP: 14400, <br>
-         error: null<br>
-      }
+      <pre>
+{
+   tokenREST: "eyJhbOciODSUzI1NiIsImtpZCI6Ij",
+   tokenSOAP: "TOKEN#85c18f10-e479-44c0- 9af7", 
+   expireREST: 3600, 
+   expireSOAP: 14400, 
+   error: null
+}
+      </pre>
       </dd>
    </dl>
 
    <h3>Example of JSON output of incorrect login:</h3>
    <dl class="exampleJson">
       <dd>
-      {<br>
-         tokenREST: null,<br>
-         tokenSOAP: null, <br>
-         expireREST: null, <br>
-         expireSOAP: null, <br>
-         error: "invalid_username_or_password"<br>
-      }
-      </dd>
+      <pre>
+{
+   tokenREST: null,
+   tokenSOAP: null,
+   expireREST: null,
+   expireSOAP: null,
+   error: "invalid_password"
+}
+     </pre>
+     </dd>   
    </dl>
 
    <h3>Details</h3>
