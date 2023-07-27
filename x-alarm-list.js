@@ -27,11 +27,13 @@ module.exports = function (RED) {
                 return;
             }
             let resultMsg = { payload: null };
+            const hostname = msg.payload.hasOwnProperty('hostname') ? msg.payload.hostname : config.hostname;
+            const port = msg.payload.hasOwnProperty('port') ? msg.payload.port : config.port;
             const maxLines = msg.payload.hasOwnProperty('maxLines') ? msg.payload.maxLines : config.maxLines;
             const order = msg.payload.hasOwnProperty('order') ? msg.payload.order : config.order;
             const target = msg.payload.hasOwnProperty('target') ? msg.payload.target : config.target;            
             
-            const res = await getAlarmList(access_token, maxLines, order, target);
+            const res = await getAlarmList(access_token, hostname, port, maxLines, order, target);
             
             resultMsg.payload = res;
             node.send(resultMsg);

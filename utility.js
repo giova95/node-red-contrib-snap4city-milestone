@@ -7,11 +7,11 @@ const Gateway = require('./xprotect-gateway.js');
 //functions to use in node-red blocks
 module.exports = {
     //Return JSON of array where each array contains an alarm line
-    getAlarmList: async function (tokenSOAP, maxLines, order, target) {
+    getAlarmList: async function (tokenSOAP, hostname, port, maxLines, order, target) {
         let list;
-        const { sessionId, error } = await startAlarmSession(tokenSOAP);
+        const { sessionId, error } = await startAlarmSession(tokenSOAP, hostname, port);
         if (typeof sessionId !== undefined) {
-            const resSession = await getAlarmLines(tokenSOAP, sessionId, maxLines, order, target);
+            const resSession = await getAlarmLines(tokenSOAP, sessionId, hostname, port, maxLines, order, target);
             const xmlList = await resSession.text();
             const jsonList = JSON.parse(xml2json(xmlList));
 
@@ -143,10 +143,10 @@ module.exports = {
 };
 
 //utility functions useful for methods above
-async function startAlarmSession(tokenSOAP) {
+async function startAlarmSession(tokenSOAP, hostname, port) {
     let id = null;
     let error = null;
-    const resSession = await getSessionId(tokenSOAP);
+    const resSession = await getSessionId(tokenSOAP, hostname, port);
     const xmlSession = await resSession.text();
     const jsonSession = JSON.parse(xml2json(xmlSession));
 
@@ -159,8 +159,8 @@ async function startAlarmSession(tokenSOAP) {
     return { id, error };
 }
 
-async function getAlarmLines(tokenSOAP, sessionId, maxLines, order, target) {
-    const url = 'http://localhost:22331/Central/AlarmServiceToken';
+async function getAlarmLines(tokenSOAP, hostname, port, sessionId, maxLines, order, target) {
+    const url = "http://" + hostname + ":" + port + "/Central/AlarmServiceToken";
     const payload = getXML(tokenSOAP, sessionId, maxLines, order, target);
     let lines;
 
@@ -181,9 +181,9 @@ async function getAlarmLines(tokenSOAP, sessionId, maxLines, order, target) {
     return lines;
 }
 
-async function getSessionId(tokenSOAP) {
+async function getSessionId(tokenSOAP, hostname, port) {
     let sessionId;
-    const url = 'http://localhost:22331/Central/AlarmServiceToken';
+    const url = "http://" + hostname + ":" + port + "/Central/AlarmServiceToken";
     const payload = startXML(tokenSOAP);
 
     await fetch(url, {
