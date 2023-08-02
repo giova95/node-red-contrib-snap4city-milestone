@@ -22,6 +22,10 @@ module.exports = function (RED) {
         const { sendXML } = require('./utility.js');
 
         node.on('input', async function (msg) {
+            if(typeof msg !=+ 'undefined'){
+                node.error("No payload received");
+                return;
+            }
             access_token = this.context().flow.get('access_tokenREST') || null;
             const serverurl = this.context().flow.get('server_url') || null;
             if (access_token == null) {
@@ -39,7 +43,7 @@ module.exports = function (RED) {
             const guid = msg.payload.hasOwnProperty('guid') ? msg.payload.guid : config.guid;
             const hostname = msg.payload.hasOwnProperty('hostname') ? msg.payload.hostname : config.hostname;
             const port = msg.payload.hasOwnProperty('port') ? msg.payload.port : config.port;
-
+        
             const response = await sendXML(access_token, guid, name, hostname, port, serverurl);
             if (typeof response === 'string') {
                 resultMsg.payload.message = response;

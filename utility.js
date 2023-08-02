@@ -8,13 +8,17 @@ const Gateway = require('./xprotect-gateway.js');
 module.exports = {
     //Return JSON of array where each array contains an alarm line
     getAlarmList: async function (tokenSOAP, hostname, port, maxLines, order, target) {
+
         let list;
-        const { sessionId, error } = await startAlarmSession(tokenSOAP, hostname, port);
-        if (typeof sessionId !== undefined) {
-            const resSession = await getAlarmLines(tokenSOAP, sessionId, hostname, port, maxLines, order, target);
+        const resSession = await getAlarmLines(tokenSOAP, hostname, port, maxLines, order, target);
+        if (typeof resSession !== 'object') {
+            list = {
+                "error": resSession.split(', reason: ').shift(),
+                "description": resSession.split('reason: ').pop()
+            }
+        } else {
             const xmlList = await resSession.text();
             const jsonList = JSON.parse(xml2json(xmlList));
-
             if (resSession.status !== 200) {
                 const err = jsonList.elements[0].elements[0].elements[0].elements[1].elements[0].text;
                 const error = resSession.status + ' ' + resSession.statusText;
@@ -36,10 +40,9 @@ module.exports = {
                     list.push(Object.fromEntries(alarm));
                 }
             }
-        } else {
-            list = error;
         }
         return list;
+
     },
 
     //Get access token for the MIP VMS RESTful API gateway.
@@ -143,25 +146,9 @@ module.exports = {
 };
 
 //utility functions useful for methods above
-async function startAlarmSession(tokenSOAP, hostname, port) {
-    let id = null;
-    let error = null;
-    const resSession = await getSessionId(tokenSOAP, hostname, port);
-    const xmlSession = await resSession.text();
-    const jsonSession = JSON.parse(xml2json(xmlSession));
-
-    if (resSession.status === 200) {
-        id = jsonSession.elements[0].elements[0].elements[0].elements[0].elements[0].text;
-    } else {
-        const err = jsonSession.elements[0].elements[0].elements[0].elements[1].elements[0].text;
-        error = resSession.status + ' ' + resSession.statusText + ' ' + err;
-    }
-    return { id, error };
-}
-
-async function getAlarmLines(tokenSOAP, hostname, port, sessionId, maxLines, order, target) {
+async function getAlarmLines(tokenSOAP, hostname, port, maxLines, order, target) {
     const url = "http://" + hostname + ":" + port + "/Central/AlarmServiceToken";
-    const payload = getXML(tokenSOAP, sessionId, maxLines, order, target);
+    const payload = getXML(tokenSOAP, maxLines, order, target);
     let lines;
 
     await fetch(url, {
@@ -175,55 +162,18 @@ async function getAlarmLines(tokenSOAP, hostname, port, sessionId, maxLines, ord
         const res = await response;
         lines = res;
     }).catch(function (error) {
-        const msg = "Failed to Start Alarm Session: " + error;
+        const msg = ""+error;
         lines = msg;
     });
     return lines;
 }
 
-async function getSessionId(tokenSOAP, hostname, port) {
-    let sessionId;
-    const url = "http://" + hostname + ":" + port + "/Central/AlarmServiceToken";
-    const payload = startXML(tokenSOAP);
-
-    await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/xml',
-            'SOAPAction': 'http://videoos.net/2/CentralServerAlarmCommand/IAlarmCommandToken/StartAlarmLineSession',
-        },
-        body: payload
-    }).then(async function (response) {
-        const res = await response;
-        sessionId = res;
-    }).catch(function (error) {
-        const msg = "Failed to Start Alarm Session: " + error;
-        sessionId = msg;
-    });
-    return sessionId;
-}
-
-function startXML(tokenSOAP) {
-
-    const xml = '' +
-        '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
-        ' <s:Body>' +
-        '   <StartAlarmLineSession  xmlns="http://videoos.net/2/CentralServerAlarmCommand">' +
-        '     <token>' + tokenSOAP + '</token>' +
-        '   </StartAlarmLineSession>' +
-        ' </s:Body>' +
-        '</s:Envelope>'
-
-    return xml;
-}
-
-function getXML(tokenSOAP, sessionId, maxLines, order, target) {
+function getXML(tokenSOAP, maxLines, order, target) {
     const xml = '' +
         '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">' +
         ' <s:Body>' +
         '   <GetAlarmLines xmlns="http://videoos.net/2/CentralServerAlarmCommand">' +
         '     <token>' + tokenSOAP + '</token>' +
-        '     <sessionId>' + sessionId + '</sessionId>' +
         '     <from>0</from>' +
         '     <maxCount>' + maxLines + '</maxCount>' +
         '     <filter xmlns:a="http://schemas.datacontract.org/2004/07/VideoOS.Platform.Proxy.Alarm" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">' +
@@ -241,6 +191,7 @@ function getXML(tokenSOAP, sessionId, maxLines, order, target) {
 
     return xml;
 }
+
 function eventXML(guid, name) {
     const timestamp = new Date().toISOString();
 

@@ -21,6 +21,11 @@ module.exports = function (RED) {
         const { getAlarmList } = require('./utility.js');
 
         node.on('input', async function (msg) {
+            if(typeof msg !=+ 'undefined'){
+                node.error("No payload received");
+                return;
+            }
+            
             access_token = this.context().flow.get('access_tokenSOAP') || null;
             if (access_token == null) {
                 node.warn("Login to XProtect first!");
