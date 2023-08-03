@@ -3,9 +3,6 @@
     "description": "Node-Red integration to communicate with Milestone XProtect VMS",
     "name": "node-red-contrib-snap4city-milestone",
     "homepage": "https://github.com/disit/node-red-contrib-snap4city-milestone",
-    "engines":{
-        "node":">=18.16.0"
-    },
     "node-red": {
         "version": ">=2.2.2",
         "nodes": {
@@ -27,7 +24,7 @@
     "license": "AGPL-3.0-or-later",
     "dependencies": {
         "jsontoxml": "^1.0.1",
-        "node-fetch": "^2.6.12",
+        "node-fetch": "^2.6.11",
         "uuid": "^9.0.0",
         "xml-js": "^1.6.11",
         "xml2js": "^0.6.0"
