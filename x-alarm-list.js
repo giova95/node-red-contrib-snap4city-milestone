@@ -27,11 +27,15 @@ module.exports = function (RED) {
                 return;
             }
             let resultMsg = { payload: null };
-            const hostname = typeof msg.payload !== 'undefined' ? msg.payload.hostname : config.hostname;
-            const port = typeof msg.payload !== 'undefined' ? msg.payload.port : config.port;
-            const maxLines = typeof msg.payload !== 'undefined' ? msg.payload.maxLines : config.maxLines;
-            const order = typeof msg.payload !== 'undefined' ? msg.payload.order : config.order;
-            const target = typeof msg.payload !== 'undefined' ? msg.payload.target : config.target;
+            
+            if(typeof msg.payload === 'undefined'){
+                msg.payload = {};
+            }
+            const hostname = msg.payload.hostname ? msg.payload.hostname : config.hostname;
+            const port = msg.payload.port ? msg.payload.port : config.port;
+            const maxLines = msg.payload.maxLines ? msg.payload.maxLines : config.maxLines;
+            const order = msg.payload.order ? msg.payload.order : config.order;
+            const target = msg.payload.target ? msg.payload.target : config.target;
             const res = await getAlarmList(access_token, hostname, port, maxLines, order, target);
             
             resultMsg.payload = res;
