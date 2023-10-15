@@ -106,7 +106,7 @@ module.exports = {
     },
 
     //send and trigger an Analytic Event through an XML file
-    sendXML: async function (access_token, guid, name, hostname, port, serverUrl) {
+    sendXML: async function (access_token, guid, name, hostname, description ,port, serverUrl) {
         let checkName = false;
         let events;
         let xmlres = null;
@@ -124,7 +124,7 @@ module.exports = {
         }
         if (checkName) {
             const url = "http://" + hostname + ":" + port;
-            const xml = eventXML(guid, name);
+            const xml = eventXML(guid, name, description);
             await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -192,7 +192,7 @@ function getXML(tokenSOAP, maxLines, order, target) {
     return xml;
 }
 
-function eventXML(guid, name) {
+function eventXML(guid, name, description) {
     const timestamp = new Date().toISOString();
 
     const xml = '' +
@@ -215,9 +215,7 @@ function eventXML(guid, name) {
         '           </FQID>' +
         '       </Source>' +
         '   </EventHeader>' +
-        '   <Description>' +
-        '       Analytics event description' +
-        '   </Description>' +
+        '   <Description>' + description +'</Description>' +
         '   <Location>' +
         '       Event location 1' +
         '   </Location>' +

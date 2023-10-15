@@ -26,6 +26,7 @@
             guid: { type: 'text' },
             hostname: { type: 'text' },
             port: { type: 'text' },
+            description: { type: 'text' }
         }
     });
 </script>
@@ -46,6 +47,10 @@
     <div class="form-row">
         <label for="node-input-port"><i class="fa fa-tag"></i>Port</label>
         <input type="text" id="node-input-port" placeholder="Port(default:9090)">
+    </div>
+    <div class="form-row">
+        <label for="node-input-description"><i class="fa fa-tag"></i>Name</label>
+        <input type="text" id="node-input-description" placeholder="Description">
     </div>
 </script>
 
@@ -77,6 +82,10 @@
        </dt>
        <dd>The port that allows send analytics events to the VMS, which must be activated(default 9090). Check the XProtect documentation for more details.</dd>
     </dl>
+    <dt>Description
+        <span class="property-type">string(compulsory)</span>
+    </dt>
+    <dd>A short description of the event which will be send, if it's generated from Snap4City could contain name, GPS position, severity, impact etc..</dd>
 
     <h3>Outputs</h3>
     <p>A JSON object with these parameters:</p>
