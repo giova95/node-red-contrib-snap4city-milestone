@@ -49,7 +49,7 @@
         <input type="text" id="node-input-port" placeholder="Port(default:9090)">
     </div>
     <div class="form-row">
-        <label for="node-input-description"><i class="fa fa-tag"></i>Name</label>
+        <label for="node-input-description"><i class="fa fa-tag"></i>Description</label>
         <input type="text" id="node-input-description" placeholder="Description">
     </div>
 </script>
@@ -81,11 +81,12 @@
             <span class="property-type">number(compulsory)</span>
        </dt>
        <dd>The port that allows send analytics events to the VMS, which must be activated(default 9090). Check the XProtect documentation for more details.</dd>
-    </dl>
-    <dt>Description
+       
+       <dt>Description
         <span class="property-type">string(compulsory)</span>
-    </dt>
-    <dd>A short description of the event which will be send, if it's generated from Snap4City could contain name, GPS position, severity, impact etc..</dd>
+       </dt>
+       <dd>A short description of the event which will be send, if it's generated from Snap4City could contain name, GPS position, severity, impact etc..</dd>
+     </dl>
 
     <h3>Outputs</h3>
     <p>A JSON object with these parameters:</p>
