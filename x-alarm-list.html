@@ -72,28 +72,28 @@
     
     <dl class="message-properties">
         <dt>hostname
-            <span class="property-type">string(compulsory)</span>
+            <span class="property-type">string</span>
        </dt>
-       <dd>The hostname where the Event Server of Milestone VMS runs on. Only http or https are allowed(default localhost).</dd>
+       <dd>The hostname where the Event Server of Milestone VMS runs on. Only http or https are allowed(default localhost). <b>(mandatory)</b></dd>
 
        <dt>port
-            <span class="property-type">number(compulsory)</span>
+            <span class="property-type">number</span>
        </dt>
-       <dd>The port that allows you to connect at the event server(default 22331). Check the XProtect documentation for more details.</dd>
+       <dd>The port that allows you to connect at the event server(default 22331). Check the XProtect documentation for more details. <b>(mandatory)</b></dd>
        <dt>maxLines
-           <span class="property-type">number(compulsory)</span>
+           <span class="property-type">number</span>
        </dt>
-       <dd>Max lines of alarm to display from the event server</dd>
+       <dd>Max lines of alarm to display from the event server <b>(mandatory)</b></dd>
        
        <dt>order
-           <span class="property-type">string(compulsory)</span>
+           <span class="property-type">string</span>
        </dt>
-       <dd>The sorting type for the alarms.(Basically descending/ascending displayed in a drop-down menu in node properties).</dd>
+       <dd>The sorting type for the alarms.(Basically descending/ascending displayed in a drop-down menu in node properties). <b>(mandatory)</b></dd>
        
        <dt>target
-            <span class="property-type">string(compulsory)</span>
+            <span class="property-type">string</span>
        </dt>
-       <dd>The target property of the sorting for the alarms.(They're displayed with a drop-down menu in node properties).</dd>
+       <dd>The target property of the sorting for the alarms.(They're displayed with a drop-down menu in node properties). <b>(mandatory)</b></dd>
     </dl>
 
     <h3>Outputs</h3>
