@@ -39,7 +39,7 @@ module.exports = function (RED) {
             const guid = typeof msg.payload !== 'undefined' ? msg.payload.guid : config.guid;
             const hostname = typeof msg.payload !== 'undefined' ? msg.payload.hostname : config.hostname;
             const port = typeof msg.payload !== 'undefined' ? msg.payload.port : config.port;
-            const description = typeof msg.payload !== 'undefined' ? msg.payload.port : config.port;
+            const description = typeof msg.payload !== 'undefined' ? msg.payload.description : config.description;
         
             const response = await sendXML(access_token, guid, name, hostname, description, port, serverurl);
             if (typeof response === 'string') {
